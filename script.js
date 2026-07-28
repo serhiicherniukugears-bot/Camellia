@@ -8,6 +8,26 @@ if (typeof gsap !== "undefined") {
   gsap.registerPlugin(...pluginsToRegister);
 }
 
+refreshItemsVisibility() {
+  this.gridItems.forEach((item) => {
+    const rect = item.element.getBoundingClientRect();
+    const inView = (
+      rect.top < window.innerHeight &&
+      rect.bottom > 0 &&
+      rect.left < window.innerWidth &&
+      rect.right > 0
+    );
+
+    if (inView) {
+      item.element.classList.remove("out-of-view");
+      gsap.to(item.element, { opacity: 1, duration: 0.3, overwrite: "auto" });
+    } else {
+      item.element.classList.add("out-of-view");
+      gsap.to(item.element, { opacity: 0.2, duration: 0.3, overwrite: "auto" });
+    }
+  });
+}
+
 class PreloaderManager {
   constructor() {
     this.overlay = null;

@@ -1,16 +1,33 @@
-@import url('https://fonts.cdnfonts.com/css/the-good-monolith');
+/* ==========================================
+   1. FONTS & DESIGN SYSTEM VARIABLES
+   ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 
 :root {
   --spacing-base: 1rem;
   --spacing-md: 1.5rem;
   --spacing-lg: 2rem;
-  --color-text: #ffffff;
-  --transition-medium: 0.3s ease;
-  --font-size-base: 14px;
+  
+  --color-bg-dark: #0d0d0d;
+  --color-card-bg: #161616;
+  --color-card-border: #262626;
+  --color-text-main: #ffffff;
+  --color-text-muted: #a0a0a0;
   --color-accent: #d94861;
+  --color-accent-soft: rgba(217, 72, 97, 0.15);
+
+  --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.5s ease;
 }
 
-* {
+/* ==========================================
+   2. BASE RESET & GLOBAL STYLES
+   ========================================== */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -20,25 +37,33 @@
   user-select: none;
 }
 
-/* Base Body */
+html {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-main);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-  background: #0d0d0d;
-  color: #fff;
+  background: var(--color-bg-dark);
+  color: var(--color-text-main);
   overflow-x: hidden;
   overflow-y: auto;
   margin: 0;
 }
 
 body.dragging {
-  cursor: grabbing;
+  cursor: grabbing !important;
 }
 
 body.zoom-mode {
   cursor: default;
 }
 
-/* 1. Головна шапка та центрований перемикач мов */
+/* ==========================================
+   3. MAIN HEADER & LANGUAGE SWITCHER
+   ========================================== */
 .main-header {
   position: fixed;
   top: 0;
@@ -49,8 +74,8 @@ body.zoom-mode {
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
-  background: linear-gradient(to bottom, rgba(13, 13, 13, 0.9), transparent);
-  pointer-events: none; /* Пропускає кліки крізь прозоре тло шапки */
+  background: linear-gradient(to bottom, rgba(13, 13, 13, 0.9) 0%, rgba(13, 13, 13, 0) 100%);
+  pointer-events: none;
 }
 
 .main-header * {
@@ -64,9 +89,13 @@ body.zoom-mode {
   letter-spacing: 2px;
   text-decoration: none;
   text-transform: uppercase;
+  transition: opacity var(--transition-fast);
 }
 
-/* Вирівнюємо перемикач мов суворо по центру екрана */
+.logo:hover {
+  opacity: 0.8;
+}
+
 .lang-switcher {
   position: absolute;
   left: 50%;
@@ -74,10 +103,11 @@ body.zoom-mode {
   display: flex;
   gap: 6px;
   background: rgba(30, 30, 30, 0.85);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   padding: 4px 8px;
   border-radius: 8px;
-  border: 1px solid #333;
+  border: 1px solid var(--color-card-border);
 }
 
 .lang-btn {
@@ -86,9 +116,11 @@ body.zoom-mode {
   color: #888;
   padding: 6px 12px;
   cursor: pointer;
+  font-family: var(--font-main);
   font-weight: 600;
+  font-size: 12px;
   border-radius: 6px;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
 }
 
 .lang-btn.active, 
@@ -97,8 +129,11 @@ body.zoom-mode {
   color: #fff;
 }
 
-/* 2. Секція галереї та Canvas */
-.gallery-section {
+/* ==========================================
+   4. GALLERY SECTION & CANVAS WRAPPER
+   ========================================== */
+.gallery-section,
+.viewport {
   position: fixed;
   top: 0;
   left: 0;
@@ -109,13 +144,6 @@ body.zoom-mode {
 }
 
 .viewport {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  z-index: 1;
   opacity: 0;
 }
 
@@ -137,15 +165,15 @@ body.zoom-mode {
   position: absolute;
   width: 300px;
   height: 300px;
-  background: #161616;
+  background: var(--color-card-bg);
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
   will-change: transform, opacity;
   z-index: 1;
   opacity: 1;
-  border: 1px solid #262626;
-  transition: border-color 0.3s ease;
+  border: 1px solid var(--color-card-border);
+  transition: border-color var(--transition-medium), transform var(--transition-medium);
 }
 
 .grid-item:hover {
@@ -164,7 +192,9 @@ body.zoom-mode {
   pointer-events: none;
 }
 
-/* 3. Split Screen Layout (Zoom Mode) */
+/* ==========================================
+   5. SPLIT SCREEN LAYOUT (ZOOM MODE)
+   ========================================== */
 .split-screen-container {
   position: fixed;
   top: 0;
@@ -175,6 +205,7 @@ body.zoom-mode {
   z-index: 2000;
   opacity: 0;
   pointer-events: none;
+  transition: opacity var(--transition-medium);
 }
 
 .split-screen-container.active {
@@ -187,6 +218,7 @@ body.zoom-mode {
   width: 50vw;
   height: 100vh;
   background: rgba(13, 13, 13, 0.85);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
@@ -216,9 +248,9 @@ body.zoom-mode {
   z-index: 1;
 }
 
-/* Overlay Titles */
+/* Image Title Overlay inside Split Right */
 .image-title-overlay {
-  color: white;
+  color: var(--color-text-main);
   z-index: 4;
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -230,25 +262,28 @@ body.zoom-mode {
 
 .image-slide-number span {
   color: var(--color-accent);
-  font-family: 'TheGoodMonolith', monospace;
+  font-family: var(--font-mono);
   font-size: 14px;
   letter-spacing: 0.1em;
 }
 
 .image-slide-title h1 {
-  color: white;
+  color: var(--color-text-main);
   font-size: 36px;
   font-weight: 600;
   margin: 10px 0;
+  line-height: 1.2;
 }
 
 .image-slide-description {
-  color: #a0a0a0;
+  color: var(--color-text-muted);
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-/* Controls (Центральні контролери внизу) */
+/* ==========================================
+   6. CONTROLS & INTERACTIVE ELEMENTS
+   ========================================== */
 .controls-container {
   position: fixed;
   bottom: 20px;
@@ -258,40 +293,42 @@ body.zoom-mode {
   gap: 10px;
   z-index: 3000;
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity var(--transition-slow);
 }
 
 .controls-container.visible { 
   opacity: 1; 
 }
 
-.percentage-indicator, .switch-button {
-  background-color: #161616;
+.percentage-indicator, 
+.switch-button {
+  background-color: var(--color-card-bg);
   color: #f0f0f0;
-  border: 1px solid #262626;
+  border: 1px solid var(--color-card-border);
   padding: 8px 16px;
   border-radius: 6px;
-  font-family: 'TheGoodMonolith', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-medium);
 }
 
-.switch-button:hover, .switch-button-current {
+.switch-button:hover, 
+.switch-button-current {
   background-color: var(--color-accent);
   color: #fff;
   border-color: var(--color-accent);
 }
 
-/* Close Button (Кнопка закриття праворуч вгорі) */
+/* Close Button */
 .close-button {
   position: fixed;
   top: 25px;
   right: 30px;
   width: 48px;
   height: 48px;
-  background: #161616;
-  border: 1px solid #262626;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
   border-radius: 50%;
   color: #fff;
   font-size: 20px;
@@ -302,12 +339,13 @@ body.zoom-mode {
   z-index: 10001;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.3s ease;
+  transition: all var(--transition-medium);
 }
 
 .close-button:hover {
   background: var(--color-accent);
   border-color: var(--color-accent);
+  transform: scale(1.05);
 }
 
 .close-button.active { 
@@ -315,7 +353,7 @@ body.zoom-mode {
   pointer-events: all; 
 }
 
-/* Scaling Image Overlay */
+/* Scaling Image Overlay (GSAP Flip Target) */
 .scaling-image-overlay {
   position: fixed;
   top: 0;
@@ -334,28 +372,30 @@ body.zoom-mode {
   display: block;
 }
 
-/* 4. Текстова секція нижче галереї */
+/* ==========================================
+   7. TEXT SECTION BELOW GALLERY
+   ========================================== */
 .text-section-wrapper {
   position: relative;
   z-index: 10;
   max-width: 1000px;
-  margin: 100vh auto 40px auto; /* Розміщується точно під першим екраном галереї */
+  margin: 100vh auto 40px auto;
   padding: 0 20px;
 }
 
 .content-card {
-  background: #161616;
+  background: var(--color-card-bg);
   border-radius: 12px;
   padding: 40px;
-  border: 1px solid #262626;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border: 1px solid var(--color-card-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .content-card h1 {
   font-size: 2rem;
-  color: #fff;
+  color: var(--color-text-main);
   margin-bottom: 25px;
-  border-bottom: 2px solid #262626;
+  border-bottom: 2px solid var(--color-card-border);
   padding-bottom: 15px;
 }
 
@@ -374,28 +414,28 @@ body.zoom-mode {
 
 .meaning-item h3 { 
   font-size: 1.2rem; 
-  color: #fff; 
+  color: var(--color-text-main); 
   margin-bottom: 8px; 
 }
 
 .meaning-item p { 
   color: #ccc; 
   font-size: 1rem; 
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .color-list { 
   list-style: none; 
   display: flex; 
   flex-direction: column; 
-  gap: 10px; 
+  gap: 12px; 
   padding: 0;
 }
 
 .color-item { 
   display: flex; 
   align-items: flex-start; 
-  gap: 10px; 
+  gap: 12px; 
   color: #ccc;
 }
 
@@ -404,18 +444,18 @@ body.zoom-mode {
   width: 14px; 
   height: 14px; 
   border-radius: 50%; 
-  margin-top: 5px; 
+  margin-top: 4px; 
   flex-shrink: 0; 
 }
 
-.badge-white { background: #fff; }
-.badge-red { background: #e63946; }
-.badge-pink { background: #ff85a1; }
+.badge-white { background: #ffffff; }
+.badge-red   { background: #e63946; }
+.badge-pink  { background: #ff85a1; }
 
 .summary-box {
   margin-top: 30px;
-  background: #2a1519;
-  border: 1px solid #5c1d27;
+  background: var(--color-accent-soft);
+  border: 1px solid rgba(217, 72, 97, 0.4);
   border-radius: 12px;
   padding: 20px;
 }
@@ -429,4 +469,42 @@ body.zoom-mode {
   color: #f1aeb5; 
   font-style: italic; 
   margin: 0;
+}
+
+/* ==========================================
+   8. MEDIA QUERIES (RESPONSIVENESS)
+   ========================================== */
+@media (max-width: 768px) {
+  .main-header {
+    padding: 15px 20px;
+  }
+
+  .split-screen-container {
+    flex-direction: column;
+  }
+
+  .split-left, 
+  .split-right {
+    width: 100vw;
+    height: 50vh;
+  }
+
+  .split-right {
+    padding: 25px;
+  }
+
+  .image-slide-title h1 {
+    font-size: 24px;
+  }
+
+  .close-button {
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .content-card {
+    padding: 20px;
+  }
 }

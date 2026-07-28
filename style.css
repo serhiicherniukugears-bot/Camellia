@@ -7,412 +7,412 @@
   font-style: normal;
 }
 
-root {
-  --spacing-base 1rem;
-  --spacing-md 1.5rem;
-  --spacing-lg 2rem;
-  --color-text #ffffff;
-  --color-text-dim 0.6;
-  --transition-medium 0.3s ease;
-  --font-size-base 14px;
+:root {
+  --spacing-base: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --color-text: #ffffff;
+  --color-text-dim: 0.6;
+  --transition-medium: 0.3s ease;
+  --font-size-base: 14px;
 }
 
- {
-  margin 0;
-  padding 0;
-  box-sizing border-box;
-  -webkit-user-select none;
-  -moz-user-select none;
-  -ms-user-select none;
-  user-select none;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 body {
-  font-family PPNeueMontreal, sans-serif;
-  background #000;
-  overflow hidden;
-  height 100vh;
-  cursor grab;
+  font-family: "PPNeueMontreal", sans-serif;
+  background: #000;
+  overflow: hidden;
+  height: 100vh;
+  cursor: grab;
 }
 
 body.dragging {
-  cursor grabbing;
+  cursor: grabbing;
 }
 
 body.zoom-mode {
-  cursor default;
+  cursor: default;
 }
 
- Header & Footer 
+/* Header & Footer */
 .header, .footer {
-  position fixed;
-  left 0;
-  width 100vw;
-  padding 1.5rem;
-  z-index 10000;
-  display grid;
-  grid-template-columns repeat(12, 1fr);
-  column-gap var(--spacing-base);
-  pointer-events none;
-  opacity 0;
+  position: fixed;
+  left: 0;
+  width: 100vw;
+  padding: 1.5rem;
+  z-index: 10000;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: var(--spacing-base);
+  pointer-events: none;
+  opacity: 0;
 }
 
-.header  , .footer   {
-  pointer-events auto;
+.header > *, .footer > * {
+  pointer-events: auto;
 }
 
-.header { top 0; }
-.footer { bottom 0; }
+.header { top: 0; }
+.footer { bottom: 0; }
 
-.nav-section { grid-column 1  span 3; }
-.values-section { grid-column 5  span 2; }
-.location-section { grid-column 7  span 2; }
-.contact-section { grid-column 9  span 2; }
-.social-section { grid-column 11  span 2; text-align right; }
-.info-section { grid-column 9  span 4; text-align right; }
+.nav-section { grid-column: 1 / span 3; }
+.values-section { grid-column: 5 / span 2; }
+.location-section { grid-column: 7 / span 2; }
+.contact-section { grid-column: 9 / span 2; }
+.social-section { grid-column: 11 / span 2; text-align: right; }
+.info-section { grid-column: 9 / span 4; text-align: right; }
 
- Logo 
+/* Logo */
 .logo-container {
-  margin-bottom var(--spacing-md);
-  display block;
-  width 3rem;
-  height 1.5rem;
-  position relative;
-  cursor pointer;
+  margin-bottom: var(--spacing-md);
+  display: block;
+  width: 3rem;
+  height: 1.5rem;
+  position: relative;
+  cursor: pointer;
 }
 
 .logo-circles {
-  position relative;
-  width 100%;
-  height 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .circle {
-  position absolute;
-  border-radius 50%;
-  transition transform var(--transition-medium);
-  width 1.4rem;
-  height 1.4rem;
-  background-color var(--color-text);
-  top 50%;
+  position: absolute;
+  border-radius: 50%;
+  transition: transform var(--transition-medium);
+  width: 1.4rem;
+  height: 1.4rem;
+  background-color: var(--color-text);
+  top: 50%;
 }
 
-.circle-1 { left 0; transform translate(0, -50%); }
-.circle-2 { left 0.8rem; transform translate(0, -50%); mix-blend-mode exclusion; }
+.circle-1 { left: 0; transform: translate(0, -50%); }
+.circle-2 { left: 0.8rem; transform: translate(0, -50%); mix-blend-mode: exclusion; }
 
-.logo-containerhover .circle-1 { transform translate(-0.5rem, -50%); }
-.logo-containerhover .circle-2 { transform translate(0.5rem, -50%); }
+.logo-container:hover .circle-1 { transform: translate(-0.5rem, -50%); }
+.logo-container:hover .circle-2 { transform: translate(0.5rem, -50%); }
 
-.footer p { font-family TheGoodMonolith, monospace; color #fff; }
+.footer p { font-family: "TheGoodMonolith", monospace; color: #fff; }
 
 a {
-  position relative;
-  cursor pointer;
-  color var(--color-text);
-  display inline-block;
-  text-decoration none;
-  font-size var(--font-size-base);
-  font-weight 600;
-  transition color var(--transition-medium);
+  position: relative;
+  cursor: pointer;
+  color: var(--color-text);
+  display: inline-block;
+  text-decoration: none;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  transition: color var(--transition-medium);
 }
 
-aafter {
-  content ;
-  position absolute;
-  top 0;
-  left 0;
-  width 0;
-  height 100%;
-  background-color var(--color-text);
-  z-index -1;
-  transition width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+a::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: var(--color-text);
+  z-index: -1;
+  transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-ahoverafter { width 100%; }
-ahover { color black; }
+a:hover::after { width: 100%; }
+a:hover { color: black; }
 
-ul { list-style none; }
-h3 { font-size 14px; margin-bottom var(--spacing-base); font-weight 600; color #fff; }
+ul { list-style: none; }
+h3 { font-size: 14px; margin-bottom: var(--spacing-base); font-weight: 600; color: #fff; }
 
- Canvas Viewport 
+/* Canvas Viewport */
 .viewport {
-  position fixed;
-  top 0;
-  left 0;
-  width 100vw;
-  height 100vh;
-  overflow hidden;
-  z-index 1;
-  opacity 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 1;
+  opacity: 0;
 }
 
 .canvas-wrapper {
-  position absolute;
-  top 0;
-  left 0;
-  transform-origin 0 0;
-  will-change transform;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
 }
 
 .grid-container {
-  position relative;
-  width 100%;
-  height 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .grid-item {
-  position absolute;
-  width 320px;
-  height 320px;
-  background #000;
-  cursor pointer;
-  will-change transform, opacity;
-  z-index 1;
-  opacity 1;
-  transition opacity 0.6s ease;
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: #000;
+  cursor: pointer;
+  will-change: transform, opacity;
+  z-index: 1;
+  opacity: 1;
+  transition: opacity 0.6s ease;
 }
 
-.grid-item.out-of-view { opacity 0.1; }
+.grid-item.out-of-view { opacity: 0.1; }
 
 .grid-item img {
-  width 100%;
-  height 100%;
-  object-fit cover;
-  display block;
-  pointer-events none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
 }
 
- Split Screen Layout 
+/* Split Screen Layout */
 .split-screen-container {
-  position fixed;
-  top 0;
-  left 0;
-  width 100vw;
-  height 100vh;
-  display flex;
-  z-index 2;
-  opacity 0;
-  pointer-events none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .split-screen-container.active {
-  opacity 1;
-  pointer-events all;
+  opacity: 1;
+  pointer-events: all;
 }
 
 .split-left, .split-right {
-  position relative;
-  width 50vw;
-  height 100vh;
-  background rgba(0, 0, 0, 0.6);
-  display flex;
-  justify-content center;
-  align-items center;
-  z-index 1;
-  cursor pointer;
+  position: relative;
+  width: 50vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  cursor: pointer;
 }
 
 .zoom-target {
-  width 100%;
-  height 100%;
-  position relative;
-  display flex;
-  align-items center;
-  justify-content center;
-  z-index 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
- Overlay Titles 
+/* Overlay Titles */
 .image-title-overlay {
-  position absolute;
-  bottom 40px;
-  left 40px;
-  color white;
-  z-index 4;
-  opacity 0;
-  pointer-events none;
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  color: white;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .image-slide-number {
-  position relative;
-  width 400px;
-  height 20px;
-  margin-bottom 0.5em;
-  overflow hidden;
+  position: relative;
+  width: 400px;
+  height: 20px;
+  margin-bottom: 0.5em;
+  overflow: hidden;
 }
 
 .image-slide-number span {
-  position absolute;
-  top 0;
-  left 0;
-  color white;
-  font-family TheGoodMonolith, monospace;
-  font-size 12px;
-  letter-spacing 0.1em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  font-family: "TheGoodMonolith", monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
 }
 
 .image-slide-title {
-  position relative;
-  width 400px;
-  height 60px;
-  margin-bottom 1em;
-  overflow hidden;
+  position: relative;
+  width: 400px;
+  height: 60px;
+  margin-bottom: 1em;
+  overflow: hidden;
 }
 
 .image-slide-title h1 {
-  position absolute;
-  top 0;
-  left 0;
-  color white;
-  font-size 48px;
-  font-weight 500;
-  letter-spacing -0.02em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  font-size: 48px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
 .image-slide-description {
-  position relative;
-  width 400px;
-  min-height 80px;
-  overflow hidden;
+  position: relative;
+  width: 400px;
+  min-height: 80px;
+  overflow: hidden;
 }
 
 .description-line {
-  display block;
-  color rgba(255, 255, 255, 0.8);
-  font-size 16px;
-  font-weight 300;
-  line-height 1.4;
+  display: block;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.4;
 }
 
- Controls 
+/* Controls */
 .controls-container {
-  position fixed;
-  bottom 1.25em;
-  left 50%;
-  transform translateX(-50%);
-  display flex;
-  z-index 6;
-  opacity 0;
-  transition left 1.2s cubic-bezier(0.87, 0, 0.13, 1);
+  position: fixed;
+  bottom: 1.25em;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  z-index: 6;
+  opacity: 0;
+  transition: left 1.2s cubic-bezier(0.87, 0, 0.13, 1);
 }
 
-.controls-container.visible { opacity 1; }
-.controls-container.split-mode { left 75%; }
+.controls-container.visible { opacity: 1; }
+.controls-container.split-mode { left: 75%; }
 
 .percentage-indicator {
-  background-color #f0f0f0;
-  padding 0.625em 1.25em;
-  border-radius 0.25em;
-  display flex;
-  align-items center;
-  justify-content center;
-  font-family TheGoodMonolith, monospace;
-  font-size 0.75em;
-  color #333;
+  background-color: #f0f0f0;
+  padding: 0.625em 1.25em;
+  border-radius: 0.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "TheGoodMonolith", monospace;
+  font-size: 0.75em;
+  color: #333;
 }
 
 .switch {
-  display flex;
-  gap 1.25em;
-  background-color #222;
-  padding 0.625em 1.25em;
-  border-radius 0.25em;
+  display: flex;
+  gap: 1.25em;
+  background-color: #222;
+  padding: 0.625em 1.25em;
+  border-radius: 0.25em;
 }
 
 .switch-button {
-  background none;
-  border none;
-  color #666;
-  cursor pointer;
-  font-family TheGoodMonolith, monospace;
-  font-size 0.75em;
-  padding 5px 10px;
-  position relative;
-  transition all 0.3s ease-in-out;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-family: "TheGoodMonolith", monospace;
+  font-size: 0.75em;
+  padding: 5px 10px;
+  position: relative;
+  transition: all 0.3s ease-in-out;
 }
 
-.switch-button-current { color #f0f0f0; }
+.switch-button-current { color: #f0f0f0; }
 
 .indicator-dot {
-  position absolute;
-  width 5px;
-  height 5px;
-  background-color #f0f0f0;
-  border-radius 50%;
-  opacity 0;
-  top 50%;
-  transform translateY(-50%);
-  left -8px;
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  opacity: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -8px;
 }
 
-.switch-buttonhover .indicator-dot { opacity 1; }
+.switch-button:hover .indicator-dot { opacity: 1; }
 
 .sound-toggle {
-  background-color #f0f0f0;
-  padding 0.5em 0.75em;
-  border-radius 0.25em;
-  display flex;
-  align-items center;
-  justify-content center;
-  cursor pointer;
-  border none;
+  background-color: #f0f0f0;
+  padding: 0.5em 0.75em;
+  border-radius: 0.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
 }
 
- Close Button 
+/* Close Button */
 .close-button {
-  position fixed;
-  top 50%;
-  right 20px;
-  width 64px;
-  height 64px;
-  background none;
-  border none;
-  cursor pointer;
-  display flex;
-  align-items center;
-  justify-content center;
-  z-index 5;
-  opacity 0;
-  pointer-events none;
-  transform translate(40px, -50%);
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  width: 64px;
+  height: 64px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(40px, -50%);
 }
 
-.close-button.active { pointer-events all; }
-.close-button svg { transform rotate(180deg); }
+.close-button.active { pointer-events: all; }
+.close-button svg { transform: rotate(180deg); }
 
- Overlay Scaling Image 
+/* Overlay Scaling Image */
 .scaling-image-overlay {
-  position fixed;
-  top 0;
-  left 0;
-  z-index 3;
-  pointer-events none;
-  will-change transform;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  pointer-events: none;
+  will-change: transform;
 }
 
 .scaling-image-overlay img {
-  width 100%;
-  height 100%;
-  object-fit cover;
-  display block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .page-vignette-container {
-  position fixed;
-  top 0;
-  left 0;
-  width 100%;
-  height 100%;
-  pointer-events none;
-  z-index 9998;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
 }
 
 .page-vignette-extreme {
-  position absolute;
-  top 0;
-  left 0;
-  width 100%;
-  height 100%;
-  mix-blend-mode overlay;
-  background linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 20%, transparent 40%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: overlay;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 20%, transparent 40%);
 }

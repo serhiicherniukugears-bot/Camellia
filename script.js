@@ -435,33 +435,51 @@ class FashionGallery {
   }
 
   setupWheelScroll() {
-    const scrollSpeed = 1.8; // Коефіцієнт прискорення скролу
+  const scrollSpeed = 1.5;
 
-    window.addEventListener("wheel", (e) => {
-      if (this.zoomState.isActive || !this.canvasWrapper) return;
+  window.addEventListener("wheel", (e) => {
+    // Якщо відкрита картка або ми проскролили сторінку вниз к тексту — не рухаємо полотно
+    if (this.zoomState.isActive || !this.canvasWrapper) return;
 
+    // Скролимо галерею тільки коли знаходимося в самому верху сторінки
+    if (window.scrollY === 0 && e.deltaY < 0 && gsap.getProperty(this.canvasWrapper, "y") >= this.calculateBounds().maxY) {
+      // Дозволяємо стандартний скрол сторінки вниз, якщо досягли верхньої межі
+      return;
+    }
+
+    // Якщо це горизонтальний скрол або скрол всередині меж галереї:
+    if (window.scrollY === 0) {
       const currentX = gsap.getProperty(this.canvasWrapper, "x");
       const currentY = gsap.getProperty(this.canvasWrapper, "y");
 
-      const deltaX = e.shiftKey ? e.deltaY : e.deltaX;
-      const deltaY = e.shiftKey ? 0 : e.deltaY;
-
-      let targetX = currentX - deltaX * scrollSpeed;
-      let targetY = currentY - deltaY * scrollSpeed;
-
       const bounds = this.calculateBounds();
-      targetX = Math.max(bounds.minX, Math.min(bounds.maxX, targetX));
-      targetY = Math.max(bounds.minY, Math.min(bounds.maxY, targetY));
+      
+      let targetX = currentX - (e.shiftKey ? e.deltaY : e.deltaX) * scrollSpeed;
+      let targetY = currentY - (e.shiftKey ? 0 : e.deltaY) * scrollSpeed;
+
+      // Перевіряємо, чи ми не виходимо за межі галереї
+      const clampedX = Math.max(bounds.minX, Math.min(bounds.maxX, targetX));
+      const clampedY = Math.max(bounds.minY, Math.min(bounds.maxY, targetY));
+
+      // Якщо досягли крайньої нижньої межі галереї і крутимо далі вниз — даємо сторінці скролитись до тексту
+      if (targetY < bounds.minY && e.deltaY > 0) {
+        return; 
+      }
 
       gsap.to(this.canvasWrapper, {
-        x: targetX,
-        y: targetY,
+        x: clampedX,
+        y: clampedY,
         duration: 0.25,
         ease: "power1.out",
-        overwrite: "auto"
+        overwrite: "auto",
+        onUpdate: () => {
+          // Ручне оновлення видимості під час скролу, щоб зняти баг туману
+          this.refreshItemsVisibility();
+        }
       });
-    }, { passive: true });
-  }
+    }
+  }, { passive: true });
+}
 
   playIntroAnimation() {
     gsap.to(this.gridItems.map((item) => item.element), {

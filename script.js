@@ -274,7 +274,7 @@ class FashionGallery {
   setupViewportObserver() {
     if (this.viewportObserver) this.viewportObserver.disconnect();
     this.viewportObserver = new IntersectionObserver((entries) => {
-      // Ігнорувати події обсервера, якщо увімкнено режим зуму
+      // Ігноруємо обсервер під час відкриття картки
       if (this.zoomState.isActive) return;
 
       entries.forEach((entry) => {
@@ -371,19 +371,17 @@ class FashionGallery {
     if (this.controlsContainer) this.controlsContainer.classList.remove("split-mode");
 
     const restoreAllGridItems = () => {
-      // 1. Повертаємо 100% opacity для ВСІХ елементів сітки (виправляє туман)
+      // Примусово повертаємо чіткість і видимість всім карткам (фікс туману)
       this.gridItems.forEach((item) => {
         gsap.to(item.element, { opacity: 1, duration: 0.4, ease: "power2.out" });
         gsap.to(item.img, { opacity: 1, duration: 0.2 });
       });
 
-      // 2. Очищаємо оверлей зуму
       if (this.zoomState.scalingOverlay && this.zoomState.scalingOverlay.parentNode) {
         this.zoomState.scalingOverlay.parentNode.removeChild(this.zoomState.scalingOverlay);
       }
       this.zoomState.scalingOverlay = null;
 
-      // 3. Відновлюємо класи та стан інтерфейсу
       document.body.classList.remove("zoom-mode");
       if (this.closeButton) this.closeButton.classList.remove("active");
       if (this.draggable) this.draggable.enable();
@@ -428,11 +426,41 @@ class FashionGallery {
       this.draggable = Draggable.create(this.canvasWrapper, {
         type: "x,y",
         bounds: bounds,
-        edgeResistance: 0.65,
+        edgeResistance: 0.3, // Полегшене перетягування
+        dragClickables: false,
         onDragStart: () => document.body.classList.add("dragging"),
         onDragEnd: () => document.body.classList.remove("dragging")
       })[0];
     }
+  }
+
+  setupWheelScroll() {
+    const scrollSpeed = 1.8; // Коефіцієнт прискорення скролу
+
+    window.addEventListener("wheel", (e) => {
+      if (this.zoomState.isActive || !this.canvasWrapper) return;
+
+      const currentX = gsap.getProperty(this.canvasWrapper, "x");
+      const currentY = gsap.getProperty(this.canvasWrapper, "y");
+
+      const deltaX = e.shiftKey ? e.deltaY : e.deltaX;
+      const deltaY = e.shiftKey ? 0 : e.deltaY;
+
+      let targetX = currentX - deltaX * scrollSpeed;
+      let targetY = currentY - deltaY * scrollSpeed;
+
+      const bounds = this.calculateBounds();
+      targetX = Math.max(bounds.minX, Math.min(bounds.maxX, targetX));
+      targetY = Math.max(bounds.minY, Math.min(bounds.maxY, targetY));
+
+      gsap.to(this.canvasWrapper, {
+        x: targetX,
+        y: targetY,
+        duration: 0.25,
+        ease: "power1.out",
+        overwrite: "auto"
+      });
+    }, { passive: true });
   }
 
   playIntroAnimation() {
@@ -485,7 +513,7 @@ class FashionGallery {
     gsap.set(this.viewport, { opacity: 1 });
     gsap.set(this.canvasWrapper, { scale: this.config.currentZoom });
 
-    // Центрування початкового вигляду
+    // Центрування сітки
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const initialX = (vw - this.gridDimensions.width * this.config.currentZoom) / 2;
@@ -505,7 +533,8 @@ class FashionGallery {
     if (this.closeButton) this.closeButton.addEventListener("click", () => this.exitZoomMode());
     if (this.soundToggle) this.soundToggle.addEventListener("click", () => this.soundSystem.toggle());
 
-    // Додаємо можливість закривати картку клавішею Escape
+    this.setupWheelScroll();
+
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && this.zoomState.isActive) {
         this.exitZoomMode();

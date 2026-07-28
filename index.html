@@ -1,505 +1,130 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camellia - Ugears</title>
-    <style>
-        :root {
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-main: #212529;
-            --text-muted: #6c757d;
-            --accent: #d94861;
-            --accent-hover: #b8354c;
-            --border-color: #e9ecef;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            --radius: 12px;
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            padding-bottom: 60px;
-        }
-
-        header {
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .lang-switcher {
-            display: flex;
-            gap: 6px;
-            background: #f1f3f5;
-            padding: 4px;
-            border-radius: 8px;
-        }
-
-        .lang-btn {
-            border: none;
-            background: transparent;
-            padding: 6px 14px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-radius: 6px;
-            transition: var(--transition);
-        }
-
-        .lang-btn.active {
-            background: var(--card-bg);
-            color: var(--accent);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        }
-
-        .lang-btn:hover:not(.active) {
-            color: var(--text-main);
-        }
-
-        main {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 25px;
-        }
-
-        .section-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #2c3e50;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 24px;
-            background-color: var(--accent);
-            border-radius: 2px;
-        }
-
-        /* Gallery Component Styling */
-        .gallery-wrapper {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-            padding: 20px;
-            margin-bottom: 45px;
-        }
-
-        .main-image-container {
-            width: 100%;
-            height: 480px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .main-image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            transition: opacity 0.2s ease;
-        }
-
-        .main-image-caption {
-            text-align: center;
-            margin-top: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .thumbnails-strip {
-            display: flex;
-            gap: 12px;
-            margin-top: 15px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent) var(--border-color);
-        }
-
-        .thumbnails-strip::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .thumbnails-strip::-webkit-scrollbar-thumb {
-            background-color: var(--accent);
-            border-radius: 4px;
-        }
-
-        .thumb-card {
-            flex: 0 0 90px;
-            height: 90px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: var(--transition);
-            background-color: #f8f9fa;
-        }
-
-        .thumb-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .thumb-card:hover {
-            opacity: 0.8;
-        }
-
-        .thumb-card.active {
-            border-color: var(--accent);
-            transform: scale(0.95);
-        }
-
-        /* Text Content Styling */
-        .content-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 40px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            margin-bottom: 45px;
-        }
-
-        .content-card h1 {
-            font-size: 2.2rem;
-            color: #1a1a1a;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 15px;
-        }
-
-        .meaning-list {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .meaning-item {
-            background: #fdfdfe;
-            border-left: 4px solid var(--accent);
-            padding: 20px 25px;
-            border-radius: 0 var(--radius) var(--radius) 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-
-        .meaning-item h3 {
-            font-size: 1.2rem;
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-
-        .meaning-item p {
-            color: #495057;
-            font-size: 1.02rem;
-        }
-
-        .color-list {
-            list-style: none;
-            margin-top: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .color-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .color-badge {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            margin-top: 5px;
-            flex-shrink: 0;
-        }
-
-        .badge-white { background: #ffffff; border: 2px solid #ced4da; }
-        .badge-red { background: #e63946; }
-        .badge-pink { background: #ff85a1; }
-
-        .summary-box {
-            margin-top: 35px;
-            background: #fff5f6;
-            border: 1px solid #fecdd3;
-            border-radius: var(--radius);
-            padding: 25px;
-        }
-
-        .summary-box h3 {
-            color: var(--accent);
-            margin-bottom: 10px;
-            font-size: 1.15rem;
-        }
-
-        .summary-box p {
-            color: #881337;
-            font-size: 1.05rem;
-            font-style: italic;
-        }
-
-        footer {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 40px;
-        }
-
-        @media (max-width: 768px) {
-            .content-card, .gallery-wrapper {
-                padding: 20px;
-            }
-            .main-image-container {
-                height: 300px;
-            }
-            .thumb-card {
-                flex: 0 0 70px;
-                height: 70px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draggable Zoom Grid Gallery</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- GSAP Core & Plugins -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 </head>
 <body>
 
-    <header>
-        <div class="header-container">
-            <div class="logo">Camellia</div>
-            <div class="lang-switcher">
-                <button class="lang-btn active" onclick="setLanguage('ua')">UA</button>
-                <button class="lang-btn" onclick="setLanguage('en')">EN</button>
-                <button class="lang-btn" onclick="setLanguage('ru')">RU</button>
-            </div>
+  <!-- Preloader -->
+  <div id="preloader-overlay"></div>
+
+  <!-- Header Navigation -->
+  <div class="header">
+    <div class="nav-section">
+      <div class="logo-container">
+        <div class="logo-circles">
+          <div class="circle circle-1"></div>
+          <div class="circle circle-2"></div>
         </div>
-    </header>
+      </div>
+    </div>
+    <div class="values-section">
+      <h3>+Menu</h3>
+      <ul>
+        <li><a href="#">Work</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="location-section">
+      <h3>+Studio</h3>
+      <p>Los Angeles</p>
+      <p>California</p>
+    </div>
+    <div class="contact-section">
+      <h3>+Connect</h3>
+      <p><a href="mailto:hi@filip.fyi">hi@filip.fyi</a></p>
+    </div>
+    <div class="social-section">
+      <h3>+Follow</h3>
+      <ul>
+        <li><a href="https://instagram.com/filipz__">Instagram</a></li>
+        <li><a href="https://x.com/filipz">Twitter</a></li>
+        <li><a href="https://linkedin.com/in/filipzrnzevic">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
 
-    <main>
-        <!-- Top Image Section (01-13) -->
-        <h2 class="section-title" data-i18n="top_images_title">Референси (01-13)</h2>
-        <div class="gallery-wrapper">
-            <div class="main-image-container">
-                <img id="top-main-img" src="01.jpg" alt="Camellia 01" onerror="this.src='https://via.placeholder.com/600x400?text=Image+01';">
-            </div>
-            <div class="main-image-caption" id="top-caption">Image 01</div>
-            <div class="thumbnails-strip" id="top-thumbnails"></div>
-        </div>
+  <!-- Main Viewport -->
+  <div class="viewport" id="viewport">
+    <div class="canvas-wrapper" id="canvasWrapper">
+      <div class="grid-container" id="gridContainer">
+        <!-- Grid items created via JS -->
+      </div>
+    </div>
+  </div>
 
-        <!-- Text Content Section -->
-        <div class="content-card">
-            <h1 data-i18n="main_title">Значення квітки Камелія</h1>
-            
-            <div class="meaning-list">
-                <div class="meaning-item">
-                    <h3 data-i18n="item1_title">1. Символ сумної долі та печалі</h3>
-                    <p data-i18n="item1_desc">Завдяки знаменитому роману Александра Дюма-сина «Дама з камеліями», ця квітка міцно закріпилася в культурі як символ трагічного кохання, жертовності та неможливості бути разом. Вона означає розставання через обставини або долю, а не через те, що почуття згасли.</p>
-                </div>
+  <!-- Split Screen Container -->
+  <div class="split-screen-container" id="splitScreenContainer">
+    <div class="split-left" id="splitLeft">
+      <div class="zoom-target" id="zoomTarget"></div>
+    </div>
+    <div class="split-right" id="splitRight"></div>
+  </div>
 
-                <div class="meaning-item">
-                    <h3 data-i18n="item2_title">2. Холодна краса та байдужість</h3>
-                    <p data-i18n="item2_desc">Камелія не має запаху, а її пелюстки здаються майже восковими або порцеляновими. Через це у вікторіанській мові квітів вона іноді означала «досконалість без душі» або байдужість. Дарувати її могли на знак того, що стосунки стали «холодними».</p>
-                </div>
+  <!-- Image Title Overlay -->
+  <div class="image-title-overlay" id="imageTitleOverlay">
+    <div class="image-slide-number" id="imageSlideNumber">
+      <span>01</span>
+    </div>
+    <div class="image-slide-title" id="imageSlideTitle">
+      <h1>Fashion Portrait</h1>
+    </div>
+    <div class="image-slide-description" id="imageSlideDescription"></div>
+  </div>
 
-                <div class="meaning-item">
-                    <h3 data-i18n="item3_title">3. Значення за кольорами</h3>
-                    <p data-i18n="item3_subtitle" style="margin-bottom: 12px;">Якщо говорити про класичну мову квітів:</p>
-                    <ul class="color-list">
-                        <li class="color-item">
-                            <span class="color-badge badge-white"></span>
-                            <span data-i18n="color_white"><strong>Біла камелія</strong> — досконалість, але також туга («Ти чарівна, але ми не можемо бути разом»).</span>
-                        </li>
-                        <li class="color-item">
-                            <span class="color-badge badge-red"></span>
-                            <span data-i18n="color_red"><strong>Червона камелія</strong> — палке кохання, яке палає в серці («Ти полум'я в моєму серці»), але без взаємності воно перетворюється на біль розлуки.</span>
-                        </li>
-                        <li class="color-item">
-                            <span class="color-badge badge-pink"></span>
-                            <span data-i18n="color_pink"><strong>Рожева камелія</strong> — туга за кимось, бажання бути поруч («Я сумую за тобою»).</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+  <!-- Close Button -->
+  <button class="close-button" id="closeButton">
+    <svg width="64" height="64" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7.89873 16L6.35949 14.48L11.8278 9.08H0V6.92H11.8278L6.35949 1.52L7.89873 0L16 8L7.89873 16Z" fill="white"/>
+    </svg>
+  </button>
 
-            <div class="summary-box">
-                <h3 data-i18n="summary_title">Підсумок</h3>
-                <p data-i18n="summary_desc">Якщо гвоздика чи жовта троянда означають «Ми розходимося», то камелія — це радше «Я сумую за тобою в розлуці» або «Наша любов трагічна і неможлива».</p>
-            </div>
-        </div>
+  <!-- Controls Container -->
+  <div class="controls-container" id="controlsContainer">
+    <div class="percentage-indicator" id="percentageIndicator">60%</div>
+    <div class="switch" id="controls">
+      <button class="switch-button" onclick="gallery.setZoom(0.3, this)">
+        <span class="indicator-dot"></span> ZOOM OUT
+      </button>
+      <button class="switch-button switch-button-current" onclick="gallery.setZoom(0.6, this)">
+        <span class="indicator-dot"></span> NORMAL
+      </button>
+      <button class="switch-button" onclick="gallery.setZoom(1.0, this)">
+        <span class="indicator-dot"></span> ZOOM IN
+      </button>
+      <button class="switch-button" onclick="gallery.autoFitZoom(this)">
+        <span class="indicator-dot"></span> FIT
+      </button>
+    </div>
+    <button class="sound-toggle" id="soundToggle">
+      <canvas class="sound-wave-canvas" id="soundWaveCanvas" width="32" height="16"></canvas>
+    </button>
+  </div>
 
-        <!-- Bottom Image Section (14-18) -->
-        <h2 class="section-title" data-i18n="bottom_images_title">Варіанти (14-18)</h2>
-        <div class="gallery-wrapper">
-            <div class="main-image-container">
-                <img id="bottom-main-img" src="14.jpg" alt="Camellia 14" onerror="this.src='https://via.placeholder.com/600x400?text=Image+14';">
-            </div>
-            <div class="main-image-caption" id="bottom-caption">Image 14</div>
-            <div class="thumbnails-strip" id="bottom-thumbnails"></div>
-        </div>
-    </main>
+  <!-- Footer Navigation -->
+  <div class="footer">
+    <div class="info-section">
+      <p>Est. 2025 Summer Days</p>
+      <p>34.0522 N, 118.2437 W</p>
+    </div>
+  </div>
 
-    <footer>
-        <p>&copy; Ugears - Camellia Presentation Page</p>
-    </footer>
+  <!-- Page Vignette -->
+  <div class="page-vignette-container">
+    <div class="page-vignette-extreme"></div>
+  </div>
 
-    <script>
-        // Ініціалізація галерей
-        function initGallery(mainImgId, captionId, thumbsContainerId, startNum, endNum) {
-            const mainImg = document.getElementById(mainImgId);
-            const caption = document.getElementById(captionId);
-            const thumbsContainer = document.getElementById(thumbsContainerId);
-            let html = '';
-
-            for (let i = startNum; i <= endNum; i++) {
-                const num = String(i).padStart(2, '0');
-                const isActive = i === startNum ? 'active' : '';
-                html += `
-                    <div class="thumb-card ${isActive}" data-num="${num}" onclick="selectImage('${mainImgId}', '${captionId}', '${thumbsContainerId}', '${num}', this)">
-                        <img src="${num}.jpg" alt="Thumb ${num}" onerror="this.src='https://via.placeholder.com/150?text=${num}';">
-                    </div>
-                `;
-            }
-            thumbsContainer.innerHTML = html;
-        }
-
-        // Перемикання зображень у галереї
-        function selectImage(mainImgId, captionId, thumbsContainerId, num, element) {
-            const mainImg = document.getElementById(mainImgId);
-            const caption = document.getElementById(captionId);
-            const thumbsContainer = document.getElementById(thumbsContainerId);
-
-            mainImg.style.opacity = '0.3';
-            setTimeout(() => {
-                mainImg.src = `${num}.jpg`;
-                mainImg.style.opacity = '1';
-            }, 150);
-
-            caption.textContent = `Image ${num}`;
-
-            thumbsContainer.querySelectorAll('.thumb-card').forEach(card => card.classList.remove('active'));
-            element.classList.add('active');
-        }
-
-        initGallery('top-main-img', 'top-caption', 'top-thumbnails', 1, 13);
-        initGallery('bottom-main-img', 'bottom-caption', 'bottom-thumbnails', 14, 18);
-
-        // Переклади
-        const translations = {
-            ua: {
-                top_images_title: "Референси (01-13)",
-                bottom_images_title: "Варіанти (14-18)",
-                main_title: "Значення квітки Камелія",
-                item1_title: "1. Символ сумної долі та печалі",
-                item1_desc: "Завдяки знаменитому роману Александра Дюма-сина «Дама з камеліями», ця квітка міцно закріпилася в культурі як символ трагічного кохання, жертовності та неможливості бути разом. Вона означає розставання через обставини або долю, а не через те, що почуття згасли.",
-                item2_title: "2. Холодна краса та байдужість",
-                item2_desc: "Камелія не має запаху, а її пелюстки здаються майже восковими або порцеляновими. Через це у вікторіанській мові квітів вона іноді означала «досконалість без душі» або байдужість. Дарувати її могли на знак того, що стосунки стали «холодними».",
-                item3_title: "3. Значення за кольорами",
-                item3_subtitle: "Якщо говорити про класичну мову квітів:",
-                color_white: "<strong>Біла камелія</strong> — досконалість, але також туга («Ти чарівна, але ми не можемо бути разом»).",
-                color_red: "<strong>Червона камелія</strong> — палке кохання, яке палає в серці («Ти полум'я в моєму серці»), але без взаємності воно перетворюється на біль розлуки.",
-                color_pink: "<strong>Рожева камелія</strong> — туга за кимось, бажання бути поруч («Я сумую за тобою»).",
-                summary_title: "Підсумок",
-                summary_desc: "Якщо гвоздика чи жовта троянда означають «Ми розходимося», то камелія — це радше «Я сумую за тобою в розлуці» або «Наша любов трагічна і неможлива»."
-            },
-            en: {
-                top_images_title: "References (01-13)",
-                bottom_images_title: "Variants (14-18)",
-                main_title: "Meaning of the Camellia Flower",
-                item1_title: "1. Symbol of Sad Fate and Sorrow",
-                item1_desc: "Thanks to Alexandre Dumas fils' famous novel 'The Lady of the Camellias', this flower became firmly established in culture as a symbol of tragic love, sacrifice, and the impossibility of being together. It signifies parting due to circumstances or fate, rather than fading feelings.",
-                item2_title: "2. Cold Beauty and Indifference",
-                item2_desc: "The camellia has no scent, and its petals appear almost waxy or porcelain. Because of this, in the Victorian language of flowers, it sometimes represented 'perfection without a soul' or indifference. Giving it could signal that relationships had grown cold.",
-                item3_title: "3. Meaning by Color",
-                item3_subtitle: "In the classic language of flowers:",
-                color_white: "<strong>White Camellia</strong> — perfection, but also longing ('You are charming, but we cannot be together').",
-                color_red: "<strong>Red Camellia</strong> — passionate love burning in the heart ('You are a flame in my heart'), but without reciprocity, it turns into the pain of separation.",
-                color_pink: "<strong>Pink Camellia</strong> — longing for someone, a desire to be close ('I miss you').",
-                summary_title: "Summary",
-                summary_desc: "If a carnation or yellow rose means 'We are breaking up', the camellia is rather 'I miss you in separation' or 'Our love is tragic and impossible'."
-            },
-            ru: {
-                top_images_title: "Референсы (01-13)",
-                bottom_images_title: "Варианты (14-18)",
-                main_title: "Значение цветка Камелия",
-                item1_title: "1. Символ печальной судьбы и грусти",
-                item1_desc: "Благодаря знаменитому роману Александра Дюма-сына «Дама с камелиями», этот цветок прочно закрепился в культуре как символ трагической любви, жертвенности и невозможности быть вместе. Он означает расставание из-за обстоятельств или судьбы, а не из-за того, что чувства угасли.",
-                item2_title: "2. Холодная красота и равнодушие",
-                item2_desc: "Камелия не имеет запаха, а её лепестки кажутся почти восковыми или фарфоровыми. Из-за этого в викторианском языке цветов она иногда означала «совершенство без души» или равнодушие. Дарить её могли в знак того, что отношения стали «холодными».",
-                item3_title: "3. Значение по цветам",
-                item3_subtitle: "Если говорить о классическом языке цветов:",
-                color_white: "<strong>Белая камелия</strong> — совершенство, но также тоска («Ты пленительна, но мы не можем быть вместе»).",
-                color_red: "<strong>Красная камелия</strong> — страстная любовь, пылающая в сердце («Ты пламя в моём сердце»), но без взаимности она превращается в боль разлуки.",
-                color_pink: "<strong>Розовая камелия</strong> — тоска по кому-то, желание быть рядом («Я скучаю по тебе»).",
-                summary_title: "Итог",
-                summary_desc: "Если гвоздика или жёлтая роза означают «Мы расстаёмся», то камелия — это скорее «Я скучаю по тебе в разлуке» или «Наша любовь трагична и невозможна»."
-            }
-        };
-
-        function setLanguage(lang) {
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    element.innerHTML = translations[lang][key];
-                }
-            });
-
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            const activeBtn = Array.from(document.querySelectorAll('.lang-btn')).find(
-                btn => btn.textContent.toLowerCase() === lang.toLowerCase()
-            );
-            if (activeBtn) {
-                activeBtn.classList.add('active');
-            }
-
-            document.documentElement.lang = lang;
-        }
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>

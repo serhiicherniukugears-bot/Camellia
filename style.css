@@ -99,10 +99,13 @@ body.zoom-mode {
 
 /* 2. Секція галереї та Canvas */
 .gallery-section {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  z-index: 1;
 }
 
 .viewport {
@@ -334,10 +337,8 @@ body.zoom-mode {
 /* 4. Текстова секція нижче галереї */
 .text-section-wrapper {
   position: relative;
-  z-index: 5;
-  max-width: 1000px;
-  margin: 100vh auto 40px auto; /* Розміщується під першим екраном галереї */
-  padding: 0 20px;
+  z-index: 10;
+  margin-top: 100vh; /* Зміщення на один екран вниз */
 }
 
 .content-card {

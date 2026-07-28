@@ -290,3 +290,62 @@ body.zoom-mode {
   object-fit: cover;
   display: block;
 }
+
+/* Стилі для текстового блоку під галереєю */
+.text-section-wrapper {
+  position: relative;
+  z-index: 5;
+  max-width: 1000px;
+  margin: 100vh auto 40px auto; /* Margin-top: 100vh прокручує його під галерею */
+  padding: 0 20px;
+}
+
+.content-card {
+  background: #161616;
+  border-radius: 12px;
+  padding: 40px;
+  border: 1px solid #262626;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.content-card h1 {
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #262626;
+  padding-bottom: 15px;
+}
+
+.meaning-list { display: flex; flex-direction: column; gap: 20px; }
+.meaning-item {
+  background: #1c1c1c;
+  border-left: 4px solid #d94861;
+  padding: 20px 25px;
+  border-radius: 0 12px 12px 0;
+}
+.meaning-item h3 { font-size: 1.2rem; color: #fff; margin-bottom: 8px; }
+.meaning-item p { color: #ccc; font-size: 1rem; }
+
+.color-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.color-item { display: flex; align-items: flex-start; gap: 10px; }
+.color-badge { display: inline-block; width: 14px; height: 14px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.badge-white { background: #fff; }
+.badge-red { background: #e63946; }
+.badge-pink { background: #ff85a1; }
+
+.summary-box {
+  margin-top: 30px;
+  background: #2a1519;
+  border: 1px solid #5c1d27;
+  border-radius: 12px;
+  padding: 20px;
+}
+.summary-box h3 { color: #d94861; margin-bottom: 8px; }
+.summary-box p { color: #f1aeb5; font-style: italic; }
+
+.lang-switcher { display: flex; gap: 6px; background: #222; padding: 4px; border-radius: 8px; }
+.lang-btn {
+  border: none; background: transparent; padding: 6px 12px;
+  font-weight: 600; color: #a0a0a0; cursor: pointer; border-radius: 6px;
+}
+.lang-btn.active { background: #161616; color: #d94861; }

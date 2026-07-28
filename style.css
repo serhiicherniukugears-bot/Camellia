@@ -299,7 +299,7 @@ body.zoom-mode {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10001; /* Поверх усіх елементів шапки */
+  z-index: 10001;
   opacity: 0;
   pointer-events: none;
   transition: all 0.3s ease;
@@ -338,7 +338,9 @@ body.zoom-mode {
 .text-section-wrapper {
   position: relative;
   z-index: 10;
-  margin-top: 100vh; /* Зміщення на один екран вниз */
+  max-width: 1000px;
+  margin: 100vh auto 40px auto; /* Розміщується точно під першим екраном галереї */
+  padding: 0 20px;
 }
 
 .content-card {

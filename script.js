@@ -15,7 +15,7 @@ class PreloaderManager {
     this.ctx = null;
     this.animationId = null;
     this.startTime = null;
-    this.duration = 2000;
+    this.duration = 1500;
     this.createLoadingScreen();
   }
 
@@ -65,7 +65,7 @@ class PreloaderManager {
 
       this.ctx.beginPath();
       this.ctx.arc(centerX, centerY, 3, 0, Math.PI * 2);
-      this.ctx.fillStyle = "rgba(44, 27, 20, 0.9)";
+      this.ctx.fillStyle = "rgba(217, 72, 97, 0.9)";
       this.ctx.fill();
 
       dotRings.forEach((ring, ringIndex) => {
@@ -82,15 +82,15 @@ class PreloaderManager {
           this.ctx.lineTo(x, y);
           this.ctx.lineWidth = 0.8;
           this.ctx.strokeStyle = isActive 
-            ? `rgba(166, 75, 35, ${opacityWave * 0.7})` 
-            : `rgba(44, 27, 20, ${opacityWave * 0.5})`;
+            ? `rgba(217, 72, 97, ${opacityWave * 0.7})` 
+            : `rgba(60, 60, 60, ${opacityWave * 0.5})`;
           this.ctx.stroke();
 
           this.ctx.beginPath();
           this.ctx.arc(x, y, 2.5, 0, Math.PI * 2);
           this.ctx.fillStyle = isActive 
-            ? `rgba(166, 75, 35, ${opacityWave})` 
-            : `rgba(44, 27, 20, ${opacityWave})`;
+            ? `rgba(217, 72, 97, ${opacityWave})` 
+            : `rgba(60, 60, 60, ${opacityWave})`;
           this.ctx.fill();
         }
       });
@@ -131,15 +131,12 @@ class FashionGallery {
     this.customEase = typeof CustomEase !== "undefined"
       ? CustomEase.create("smooth", ".87,0,.13,1")
       : "power2.inOut";
-    this.centerEase = typeof CustomEase !== "undefined"
-      ? CustomEase.create("center", ".25,.46,.45,.94")
-      : "power2.out";
 
     this.config = {
-      itemSize: 320,
-      baseGap: 16,
-      rows: 8,
-      cols: 12,
+      itemSize: 300,
+      baseGap: 20,
+      rows: 3,
+      cols: 6,
       currentZoom: 0.6,
       currentGap: 32
     };
@@ -153,7 +150,6 @@ class FashionGallery {
 
     this.gridItems = [];
     this.gridDimensions = {};
-    this.lastValidPosition = { x: 0, y: 0 };
     this.draggable = null;
     this.viewportObserver = null;
 
@@ -167,11 +163,7 @@ class FashionGallery {
       sounds: {
         click: new Audio("https://assets.codepen.io/7558/glitch-fx-001.mp3"),
         open: new Audio("https://assets.codepen.io/7558/click-glitch-001.mp3"),
-        close: new Audio("https://assets.codepen.io/7558/click-glitch-001.mp3"),
-        "zoom-in": new Audio("https://assets.codepen.io/7558/whoosh-fx-001.mp3"),
-        "zoom-out": new Audio("https://assets.codepen.io/7558/whoosh-fx-001.mp3"),
-        "drag-start": new Audio("https://assets.codepen.io/7558/preloader-2s-001.mp3"),
-        "drag-end": new Audio("https://assets.codepen.io/7558/preloader-2s-001.mp3")
+        close: new Audio("https://assets.codepen.io/7558/click-glitch-001.mp3")
       },
       play: (soundName) => {
         if (!this.soundSystem.enabled || !this.soundSystem.sounds[soundName]) return;
@@ -183,76 +175,27 @@ class FashionGallery {
       },
       toggle: () => {
         this.soundSystem.enabled = !this.soundSystem.enabled;
-        this.soundToggle.classList.toggle("active", this.soundSystem.enabled);
-        if (this.zoomState.isActive) return;
+        if (this.soundToggle) this.soundToggle.classList.toggle("active", this.soundSystem.enabled);
         if (this.soundSystem.enabled) {
           setTimeout(() => this.soundSystem.play("click"), 50);
         }
       }
     };
-
-    Object.values(this.soundSystem.sounds).forEach((audio) => {
-      audio.preload = "auto";
-      audio.volume = 0.3;
-    });
-
-    this.initSoundWave();
-  }
-
-  initSoundWave() {
-    const canvas = document.getElementById("soundWaveCanvas");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    const width = 32;
-    const height = 16;
-    const centerY = Math.floor(height / 2);
-    let startTime = Date.now();
-    let currentAmplitude = this.soundSystem.enabled ? 1 : 0;
-
-    const animate = () => {
-      const targetAmplitude = this.soundSystem.enabled ? 1 : 0;
-      currentAmplitude += (targetAmplitude - currentAmplitude) * 0.08;
-      ctx.clearRect(0, 0, width, height);
-
-      const time = (Date.now() - startTime) / 1000;
-      if (!this.soundSystem.enabled && currentAmplitude < 0.01) {
-        ctx.fillStyle = "#D9C4AA";
-        ctx.fillRect(0, centerY, width, 2);
-      } else {
-        ctx.fillStyle = "#2C1B14";
-        for (let i = 0; i < width; i++) {
-          const x = i - width / 2;
-          const e = Math.exp((-x * x) / 50);
-          const y = centerY + Math.cos(x * 0.4 - time * 8) * e * height * 0.35 * currentAmplitude;
-          ctx.fillRect(i, Math.round(y), 1, 2);
-        }
-      }
-      requestAnimationFrame(animate);
-    };
-    animate();
   }
 
   initImageData() {
     this.fashionImages = [];
-    for (let i = 1; i <= 14; i++) {
+    // Використовуємо ваші 18 картинок (01.jpg - 18.jpg)
+    for (let i = 1; i <= 18; i++) {
       const paddedNumber = String(i).padStart(2, "0");
-      this.fashionImages.push(`https://assets.codepen.io/7558/orange-portrait_${paddedNumber}.jpg`);
+      this.fashionImages.push(`./${paddedNumber}.jpg`);
     }
 
-    this.imageData = [
-      { number: "01", title: "Begin Before You re Ready", description: "The work starts when you notice the quiet pull." },
-      { number: "02", title: "Negative Space, Positive Signal", description: "Leave room around the idea." },
-      { number: "03", title: "Friction Is a Teacher", description: "When the line resists, listen." }
-    ];
-  }
-
-  splitTextIntoLines(element, text) {
-    element.innerHTML = "";
-    const lineSpan = document.createElement("span");
-    lineSpan.className = "description-line";
-    lineSpan.textContent = text;
-    element.appendChild(lineSpan);
-    return element.querySelectorAll(".description-line");
+    this.imageData = Array.from({ length: 18 }, (_, i) => ({
+      number: String(i + 1).padStart(2, "0"),
+      title: `Camellia Reference ${i + 1}`,
+      description: `Концептуальний референс та елемент моделі №${i + 1}.`
+    }));
   }
 
   calculateGapForZoom(zoomLevel) {
@@ -285,6 +228,8 @@ class FashionGallery {
     let imageIndex = 0;
     for (let row = 0; row < this.config.rows; row++) {
       for (let col = 0; col < this.config.cols; col++) {
+        if (imageIndex >= this.fashionImages.length) break;
+
         const item = document.createElement("div");
         item.className = "grid-item";
         const x = col * (this.config.itemSize + this.config.currentGap);
@@ -294,12 +239,12 @@ class FashionGallery {
         item.style.top = `${y}px`;
         item.style.opacity = "0";
 
-        const imageUrl = this.fashionImages[imageIndex % this.fashionImages.length];
-        imageIndex++;
+        const imageUrl = this.fashionImages[imageIndex];
 
         const img = document.createElement("img");
         img.src = imageUrl;
-        img.alt = `Fashion Portrait ${imageIndex}`;
+        img.alt = `Camellia Photo ${imageIndex + 1}`;
+        img.onerror = () => { img.src = `https://via.placeholder.com/300?text=Image+${imageIndex + 1}`; };
         item.appendChild(img);
 
         const itemData = {
@@ -310,7 +255,7 @@ class FashionGallery {
           baseX: x,
           baseY: y,
           imageUrl: imageUrl,
-          index: this.gridItems.length
+          index: imageIndex
         };
 
         item.addEventListener("click", () => {
@@ -322,6 +267,7 @@ class FashionGallery {
 
         this.gridContainer.appendChild(item);
         this.gridItems.push(itemData);
+        imageIndex++;
       }
     }
   }
@@ -336,25 +282,23 @@ class FashionGallery {
           gsap.to(entry.target, { opacity: 1, duration: 0.6, ease: "power2.out" });
         } else {
           entry.target.classList.add("out-of-view");
-          gsap.to(entry.target, { opacity: 0.1, duration: 0.6, ease: "power2.out" });
+          gsap.to(entry.target, { opacity: 0.2, duration: 0.6, ease: "power2.out" });
         }
       });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.1 });
 
     this.gridItems.forEach((item) => this.viewportObserver.observe(item.element));
   }
 
   updateTitleOverlay(imageIndex) {
-    const data = this.imageData[imageIndex % this.imageData.length];
+    const data = this.imageData[imageIndex];
     const numberElement = document.querySelector("#imageSlideNumber span");
     const titleElement = document.querySelector("#imageSlideTitle h1");
     const descriptionElement = document.getElementById("imageSlideDescription");
 
-    if (numberElement && titleElement && descriptionElement) {
-      numberElement.textContent = data.number;
-      titleElement.textContent = data.title;
-      this.descriptionLines = this.splitTextIntoLines(descriptionElement, data.description);
-    }
+    if (numberElement) numberElement.textContent = data.number;
+    if (titleElement) titleElement.textContent = data.title;
+    if (descriptionElement) descriptionElement.textContent = data.description;
   }
 
   createScalingOverlay(sourceImg) {
@@ -400,25 +344,29 @@ class FashionGallery {
         absolute: true,
         onComplete: () => {
           this.updateTitleOverlay(selectedItemData.index);
-          this.imageTitleOverlay.classList.add("active");
-          gsap.to(this.imageTitleOverlay, { opacity: 1, duration: 0.3 });
+          if (this.imageTitleOverlay) {
+            this.imageTitleOverlay.classList.add("active");
+            gsap.to(this.imageTitleOverlay, { opacity: 1, duration: 0.3 });
+          }
         }
       });
     }
 
-    this.controlsContainer.classList.add("split-mode");
-    gsap.fromTo(this.closeButton, { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, delay: 0.9 });
-    this.closeButton.classList.add("active");
+    if (this.controlsContainer) this.controlsContainer.classList.add("split-mode");
+    if (this.closeButton) {
+      gsap.fromTo(this.closeButton, { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, delay: 0.9 });
+      this.closeButton.classList.add("active");
+    }
   }
 
   exitZoomMode() {
     if (!this.zoomState.isActive) return;
     this.soundSystem.play("close");
 
-    gsap.to(this.imageTitleOverlay, { opacity: 0, duration: 0.3 });
-    gsap.to(this.closeButton, { duration: 0.3, opacity: 0, x: 40 });
+    if (this.imageTitleOverlay) gsap.to(this.imageTitleOverlay, { opacity: 0, duration: 0.3 });
+    if (this.closeButton) gsap.to(this.closeButton, { duration: 0.3, opacity: 0, x: 40 });
     this.splitScreenContainer.classList.remove("active");
-    this.controlsContainer.classList.remove("split-mode");
+    if (this.controlsContainer) this.controlsContainer.classList.remove("split-mode");
 
     if (typeof Flip !== "undefined" && this.zoomState.scalingOverlay) {
       Flip.fit(this.zoomState.scalingOverlay, this.zoomState.selectedItem.element, {
@@ -432,7 +380,7 @@ class FashionGallery {
             this.zoomState.scalingOverlay = null;
           }
           document.body.classList.remove("zoom-mode");
-          this.closeButton.classList.remove("active");
+          if (this.closeButton) this.closeButton.classList.remove("active");
           if (this.draggable) this.draggable.enable();
           this.zoomState.isActive = false;
           this.zoomState.selectedItem = null;
@@ -454,13 +402,13 @@ class FashionGallery {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const { scaledWidth, scaledHeight } = this.gridDimensions;
-    const marginX = this.config.currentGap * this.config.currentZoom;
-    const marginY = this.config.currentGap * this.config.currentZoom;
+    const marginX = 100;
+    const marginY = 100;
 
-    let minX = scaledWidth <= vw ? (vw - scaledWidth) / 2 : vw - scaledWidth - marginX;
-    let maxX = scaledWidth <= vw ? minX : marginX;
-    let minY = scaledHeight <= vh ? (vh - scaledHeight) / 2 : vh - scaledHeight - marginY;
-    let maxY = scaledHeight <= vh ? minY : marginY;
+    let minX = vw - scaledWidth - marginX;
+    let maxX = marginX;
+    let minY = vh - scaledHeight - marginY;
+    let maxY = marginY;
 
     return { minX, maxX, minY, maxY };
   }
@@ -474,30 +422,24 @@ class FashionGallery {
       this.draggable = Draggable.create(this.canvasWrapper, {
         type: "x,y",
         bounds: bounds,
-        edgeResistance: 0.8,
-        onDragStart: () => {
-          document.body.classList.add("dragging");
-          this.soundSystem.play("drag-start");
-        },
-        onDragEnd: () => {
-          document.body.classList.remove("dragging");
-          this.soundSystem.play("drag-end");
-        }
+        edgeResistance: 0.65,
+        onDragStart: () => document.body.classList.add("dragging"),
+        onDragEnd: () => document.body.classList.remove("dragging")
       })[0];
     }
   }
 
   playIntroAnimation() {
     gsap.to(this.gridItems.map((item) => item.element), {
-      duration: 0.2,
-      left: (index) => this.gridItems[index].baseX,
-      top: (index) => this.gridItems[index].baseY,
+      duration: 0.4,
       opacity: 1,
       ease: "power2.out",
-      stagger: { amount: 1.5, grid: [this.config.rows, this.config.cols] },
+      stagger: { amount: 1.0, grid: [this.config.rows, this.config.cols] },
       onComplete: () => {
-        this.controlsContainer.classList.add("visible");
-        gsap.to(this.controlsContainer, { opacity: 1, duration: 0.5 });
+        if (this.controlsContainer) {
+          this.controlsContainer.classList.add("visible");
+          gsap.to(this.controlsContainer, { opacity: 1, duration: 0.5 });
+        }
       }
     });
   }
@@ -525,14 +467,10 @@ class FashionGallery {
       onComplete: () => this.initDraggable()
     });
 
-    document.getElementById("percentageIndicator").textContent = `${Math.round(zoomLevel * 100)}%`;
+    const indicator = document.getElementById("percentageIndicator");
+    if (indicator) indicator.textContent = `${Math.round(zoomLevel * 100)}%`;
     document.querySelectorAll(".switch-button").forEach((btn) => btn.classList.remove("switch-button-current"));
     if (buttonElement) buttonElement.classList.add("switch-button-current");
-  }
-
-  autoFitZoom(buttonElement = null) {
-    const fitZoom = 0.4;
-    this.setZoom(fitZoom, buttonElement);
   }
 
   init() {
@@ -541,19 +479,25 @@ class FashionGallery {
     gsap.set(this.viewport, { opacity: 1 });
     gsap.set(this.canvasWrapper, { scale: this.config.currentZoom });
 
+    // Центрування початкового вигляду
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const initialX = (vw - this.gridDimensions.width * this.config.currentZoom) / 2;
+    const initialY = (vh - this.gridDimensions.height * this.config.currentZoom) / 2;
+    gsap.set(this.canvasWrapper, { x: initialX, y: initialY });
+
     this.setupEventListeners();
     this.playIntroAnimation();
-    gsap.to(".header, .footer", { duration: 1.2, opacity: 1, delay: 0.8 });
 
     setTimeout(() => {
       this.initDraggable();
       this.setupViewportObserver();
-    }, 1500);
+    }, 1000);
   }
 
   setupEventListeners() {
-    this.closeButton.addEventListener("click", () => this.exitZoomMode());
-    this.soundToggle.addEventListener("click", () => this.soundSystem.toggle());
+    if (this.closeButton) this.closeButton.addEventListener("click", () => this.exitZoomMode());
+    if (this.soundToggle) this.soundToggle.addEventListener("click", () => this.soundSystem.toggle());
   }
 }
 
@@ -565,5 +509,5 @@ document.addEventListener("DOMContentLoaded", () => {
       gallery = new FashionGallery();
       gallery.init();
     });
-  }, 2000);
+  }, 1500);
 });

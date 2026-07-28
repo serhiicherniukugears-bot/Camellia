@@ -296,22 +296,7 @@
     <main>
         <!-- Top Image Section (01-13) -->
         <h2 class="section-title" data-i18n="top_images_title">Референси (01-13)</h2>
-        <div class="image-grid">
-            <!-- 01 to 13 -->
-            <script>
-                for (let i = 1; i <= 13; i++) {
-                    const num = i < 10 ? '0' + i : '' + i;
-                    document.write(`
-                        <div class="image-card">
-                            <div class="image-container">
-                                <img src="${num}.jpg" alt="Camellia Reference ${num}" onerror="this.src='https://via.placeholder.com/300x300?text=Image+${num}';">
-                            </div>
-                            <div class="image-caption">Image ${num}</div>
-                        </div>
-                    `);
-                }
-            </script>
-        </div>
+        <div class="image-grid" id="top-grid"></div>
 
         <!-- Text Content Section -->
         <div class="content-card">
@@ -330,7 +315,7 @@
 
                 <div class="meaning-item">
                     <h3 data-i18n="item3_title">3. Значення за кольорами</h3>
-                    <p data-i18n="item3_subtitle" style="margin-bottom: 12px;">Якщо говорить про класичну мову квітів:</p>
+                    <p data-i18n="item3_subtitle" style="margin-bottom: 12px;">Якщо говорити про класичну мову квітів:</p>
                     <ul class="color-list">
                         <li class="color-item">
                             <span class="color-badge badge-white"></span>
@@ -356,21 +341,7 @@
 
         <!-- Bottom Image Section (14-18) -->
         <h2 class="section-title" data-i18n="bottom_images_title">Варіанти (14-18)</h2>
-        <div class="image-grid">
-            <!-- 14 to 18 -->
-            <script>
-                for (let i = 14; i <= 18; i++) {
-                    document.write(`
-                        <div class="image-card">
-                            <div class="image-container">
-                                <img src="${i}.jpg" alt="Camellia Variant ${i}" onerror="this.src='https://via.placeholder.com/300x300?text=Image+${i}';">
-                            </div>
-                            <div class="image-caption">Image ${i}</div>
-                        </div>
-                    `);
-                }
-            </script>
-        </div>
+        <div class="image-grid" id="bottom-grid"></div>
     </main>
 
     <footer>
@@ -378,6 +349,28 @@
     </footer>
 
     <script>
+        // Створення карток зображень
+        function renderGrid(containerId, start, end) {
+            const container = document.getElementById(containerId);
+            let html = '';
+            for (let i = start; i <= end; i++) {
+                const num = String(i).padStart(2, '0');
+                html += `
+                    <div class="image-card">
+                        <div class="image-container">
+                            <img src="${num}.jpg" alt="Camellia ${num}" onerror="this.src='https://via.placeholder.com/300x300?text=Image+${num}';">
+                        </div>
+                        <div class="image-caption">Image ${num}</div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        renderGrid('top-grid', 1, 13);
+        renderGrid('bottom-grid', 14, 18);
+
+        // Переклади
         const translations = {
             ua: {
                 top_images_title: "Референси (01-13)",

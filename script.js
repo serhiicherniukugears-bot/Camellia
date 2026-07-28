@@ -391,11 +391,25 @@ class FashionGallery {
     if (this.controlsContainer) this.controlsContainer.classList.remove("split-mode");
 
     const restoreAllGridItems = () => {
-      // Примусово повертаємо чіткість і видимість всім карткам (фікс туману)
-      this.gridItems.forEach((item) => {
-        gsap.to(item.element, { opacity: 1, duration: 0.4, ease: "power2.out" });
-        gsap.to(item.img, { opacity: 1, duration: 0.2 });
-      });
+  // Примусово повертаємо 100% opacity для ВСІХ елементів у зоні видимості
+  this.refreshItemsVisibility();
+
+  this.gridItems.forEach((item) => {
+    gsap.to(item.img, { opacity: 1, duration: 0.2 });
+  });
+
+  if (this.zoomState.scalingOverlay && this.zoomState.scalingOverlay.parentNode) {
+    this.zoomState.scalingOverlay.parentNode.removeChild(this.zoomState.scalingOverlay);
+  }
+  this.zoomState.scalingOverlay = null;
+
+  document.body.classList.remove("zoom-mode");
+  if (this.closeButton) this.closeButton.classList.remove("active");
+  if (this.draggable) this.draggable.enable();
+
+  this.zoomState.isActive = false;
+  this.zoomState.selectedItem = null;
+};
 
       if (this.zoomState.scalingOverlay && this.zoomState.scalingOverlay.parentNode) {
         this.zoomState.scalingOverlay.parentNode.removeChild(this.zoomState.scalingOverlay);

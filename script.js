@@ -185,7 +185,6 @@ class FashionGallery {
 
   initImageData() {
     this.fashionImages = [];
-    // Використовуємо ваші 18 картинок (01.jpg - 18.jpg)
     for (let i = 1; i <= 18; i++) {
       const paddedNumber = String(i).padStart(2, "0");
       this.fashionImages.push(`./${paddedNumber}.jpg`);
@@ -275,6 +274,9 @@ class FashionGallery {
   setupViewportObserver() {
     if (this.viewportObserver) this.viewportObserver.disconnect();
     this.viewportObserver = new IntersectionObserver((entries) => {
+      // Ігнорувати події обсервера, якщо увімкнено режим зуму
+      if (this.zoomState.isActive) return;
+
       entries.forEach((entry) => {
         if (this.zoomState.selectedItem && entry.target === this.zoomState.selectedItem.element) return;
         if (entry.isIntersecting) {
@@ -368,33 +370,37 @@ class FashionGallery {
     this.splitScreenContainer.classList.remove("active");
     if (this.controlsContainer) this.controlsContainer.classList.remove("split-mode");
 
-    if (typeof Flip !== "undefined" && this.zoomState.scalingOverlay) {
+    const restoreAllGridItems = () => {
+      // 1. Повертаємо 100% opacity для ВСІХ елементів сітки (виправляє туман)
+      this.gridItems.forEach((item) => {
+        gsap.to(item.element, { opacity: 1, duration: 0.4, ease: "power2.out" });
+        gsap.to(item.img, { opacity: 1, duration: 0.2 });
+      });
+
+      // 2. Очищаємо оверлей зуму
+      if (this.zoomState.scalingOverlay && this.zoomState.scalingOverlay.parentNode) {
+        this.zoomState.scalingOverlay.parentNode.removeChild(this.zoomState.scalingOverlay);
+      }
+      this.zoomState.scalingOverlay = null;
+
+      // 3. Відновлюємо класи та стан інтерфейсу
+      document.body.classList.remove("zoom-mode");
+      if (this.closeButton) this.closeButton.classList.remove("active");
+      if (this.draggable) this.draggable.enable();
+
+      this.zoomState.isActive = false;
+      this.zoomState.selectedItem = null;
+    };
+
+    if (typeof Flip !== "undefined" && this.zoomState.scalingOverlay && this.zoomState.selectedItem) {
       Flip.fit(this.zoomState.scalingOverlay, this.zoomState.selectedItem.element, {
         duration: 1.2,
         ease: this.customEase,
         absolute: true,
-        onComplete: () => {
-          gsap.set(this.zoomState.selectedItem.img, { opacity: 1 });
-          if (this.zoomState.scalingOverlay) {
-            document.body.removeChild(this.zoomState.scalingOverlay);
-            this.zoomState.scalingOverlay = null;
-          }
-          document.body.classList.remove("zoom-mode");
-          if (this.closeButton) this.closeButton.classList.remove("active");
-          if (this.draggable) this.draggable.enable();
-          this.zoomState.isActive = false;
-          this.zoomState.selectedItem = null;
-        }
+        onComplete: restoreAllGridItems
       });
     } else {
-      gsap.set(this.zoomState.selectedItem.img, { opacity: 1 });
-      if (this.zoomState.scalingOverlay) {
-        document.body.removeChild(this.zoomState.scalingOverlay);
-        this.zoomState.scalingOverlay = null;
-      }
-      document.body.classList.remove("zoom-mode");
-      if (this.draggable) this.draggable.enable();
-      this.zoomState.isActive = false;
+      restoreAllGridItems();
     }
   }
 
@@ -498,6 +504,13 @@ class FashionGallery {
   setupEventListeners() {
     if (this.closeButton) this.closeButton.addEventListener("click", () => this.exitZoomMode());
     if (this.soundToggle) this.soundToggle.addEventListener("click", () => this.soundSystem.toggle());
+
+    // Додаємо можливість закривати картку клавішею Escape
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && this.zoomState.isActive) {
+        this.exitZoomMode();
+      }
+    });
   }
 }
 

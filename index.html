@@ -89,7 +89,7 @@
         }
 
         main {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 40px auto;
             padding: 0 25px;
         }
@@ -113,57 +113,86 @@
             border-radius: 2px;
         }
 
-        /* Image Grids */
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
+        /* Gallery Component Styling */
+        .gallery-wrapper {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            padding: 20px;
             margin-bottom: 45px;
         }
 
-        .image-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .image-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .image-container {
+        .main-image-container {
             width: 100%;
-            height: 220px;
+            height: 480px;
             background-color: #f8f9fa;
-            position: relative;
+            border-radius: 8px;
             overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .image-container img {
+        .main-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: opacity 0.2s ease;
+        }
+
+        .main-image-caption {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .thumbnails-strip {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--border-color);
+        }
+
+        .thumbnails-strip::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .thumbnails-strip::-webkit-scrollbar-thumb {
+            background-color: var(--accent);
+            border-radius: 4px;
+        }
+
+        .thumb-card {
+            flex: 0 0 90px;
+            height: 90px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: #f8f9fa;
+        }
+
+        .thumb-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.4s ease;
         }
 
-        .image-card:hover img {
-            transform: scale(1.05);
+        .thumb-card:hover {
+            opacity: 0.8;
         }
 
-        .image-caption {
-            padding: 12px 15px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-align: center;
-            background: #fff;
-            border-top: 1px solid var(--border-color);
+        .thumb-card.active {
+            border-color: var(--accent);
+            transform: scale(0.95);
         }
 
         /* Text Content Styling */
@@ -264,18 +293,15 @@
         }
 
         @media (max-width: 768px) {
-            .content-card {
-                padding: 25px;
+            .content-card, .gallery-wrapper {
+                padding: 20px;
             }
-            .header-container {
-                padding: 12px 15px;
+            .main-image-container {
+                height: 300px;
             }
-            .image-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 12px;
-            }
-            .image-container {
-                height: 160px;
+            .thumb-card {
+                flex: 0 0 70px;
+                height: 70px;
             }
         }
     </style>
@@ -296,7 +322,13 @@
     <main>
         <!-- Top Image Section (01-13) -->
         <h2 class="section-title" data-i18n="top_images_title">Референси (01-13)</h2>
-        <div class="image-grid" id="top-grid"></div>
+        <div class="gallery-wrapper">
+            <div class="main-image-container">
+                <img id="top-main-img" src="01.jpg" alt="Camellia 01" onerror="this.src='https://via.placeholder.com/600x400?text=Image+01';">
+            </div>
+            <div class="main-image-caption" id="top-caption">Image 01</div>
+            <div class="thumbnails-strip" id="top-thumbnails"></div>
+        </div>
 
         <!-- Text Content Section -->
         <div class="content-card">
@@ -341,7 +373,13 @@
 
         <!-- Bottom Image Section (14-18) -->
         <h2 class="section-title" data-i18n="bottom_images_title">Варіанти (14-18)</h2>
-        <div class="image-grid" id="bottom-grid"></div>
+        <div class="gallery-wrapper">
+            <div class="main-image-container">
+                <img id="bottom-main-img" src="14.jpg" alt="Camellia 14" onerror="this.src='https://via.placeholder.com/600x400?text=Image+14';">
+            </div>
+            <div class="main-image-caption" id="bottom-caption">Image 14</div>
+            <div class="thumbnails-strip" id="bottom-thumbnails"></div>
+        </div>
     </main>
 
     <footer>
@@ -349,26 +387,45 @@
     </footer>
 
     <script>
-        // Створення карток зображень
-        function renderGrid(containerId, start, end) {
-            const container = document.getElementById(containerId);
+        // Ініціалізація галерей
+        function initGallery(mainImgId, captionId, thumbsContainerId, startNum, endNum) {
+            const mainImg = document.getElementById(mainImgId);
+            const caption = document.getElementById(captionId);
+            const thumbsContainer = document.getElementById(thumbsContainerId);
             let html = '';
-            for (let i = start; i <= end; i++) {
+
+            for (let i = startNum; i <= endNum; i++) {
                 const num = String(i).padStart(2, '0');
+                const isActive = i === startNum ? 'active' : '';
                 html += `
-                    <div class="image-card">
-                        <div class="image-container">
-                            <img src="${num}.jpg" alt="Camellia ${num}" onerror="this.src='https://via.placeholder.com/300x300?text=Image+${num}';">
-                        </div>
-                        <div class="image-caption">Image ${num}</div>
+                    <div class="thumb-card ${isActive}" data-num="${num}" onclick="selectImage('${mainImgId}', '${captionId}', '${thumbsContainerId}', '${num}', this)">
+                        <img src="${num}.jpg" alt="Thumb ${num}" onerror="this.src='https://via.placeholder.com/150?text=${num}';">
                     </div>
                 `;
             }
-            container.innerHTML = html;
+            thumbsContainer.innerHTML = html;
         }
 
-        renderGrid('top-grid', 1, 13);
-        renderGrid('bottom-grid', 14, 18);
+        // Перемикання зображень у галереї
+        function selectImage(mainImgId, captionId, thumbsContainerId, num, element) {
+            const mainImg = document.getElementById(mainImgId);
+            const caption = document.getElementById(captionId);
+            const thumbsContainer = document.getElementById(thumbsContainerId);
+
+            mainImg.style.opacity = '0.3';
+            setTimeout(() => {
+                mainImg.src = `${num}.jpg`;
+                mainImg.style.opacity = '1';
+            }, 150);
+
+            caption.textContent = `Image ${num}`;
+
+            thumbsContainer.querySelectorAll('.thumb-card').forEach(card => card.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        initGallery('top-main-img', 'top-caption', 'top-thumbnails', 1, 13);
+        initGallery('bottom-main-img', 'bottom-caption', 'bottom-thumbnails', 14, 18);
 
         // Переклади
         const translations = {

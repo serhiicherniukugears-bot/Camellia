@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camellia - Ugears Gallery</title>
+    <title>Camellia - Ugears</title>
     <link rel="stylesheet" href="style.css">
-    <!-- GSAP Libraries (Обов'язкові для анімацій та перетягування) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Flip.min.js"></script>
@@ -14,17 +13,33 @@
 
     <div id="preloader-overlay"></div>
 
-    <header class="header">
-        <a href="#" class="logo-container">Camellia</a>
+    <!-- Шапка з логотипом та перемикачем мов -->
+    <header class="main-header">
+        <div class="logo">CAMELLIA</div>
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="setLanguage('ua')">UA</button>
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+            <button class="lang-btn" onclick="setLanguage('ru')">RU</button>
+        </div>
     </header>
 
-    <div class="viewport" id="viewport">
-        <div class="canvas-wrapper" id="canvasWrapper">
-            <div class="grid-container" id="gridContainer"></div>
+    <!-- Секція з галереєю (займає 100vh) -->
+    <section class="gallery-section">
+        <div class="viewport" id="viewport">
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <div class="grid-container" id="gridContainer"></div>
+            </div>
         </div>
-    </div>
 
-    <!-- Модальний режим перегляду зображення -->
+        <div class="controls-container" id="controlsContainer">
+            <div class="percentage-indicator" id="percentageIndicator">60%</div>
+            <button class="switch-button" onclick="gallery.setZoom(0.4, this)">40%</button>
+            <button class="switch-button switch-button-current" onclick="gallery.setZoom(0.6, this)">60%</button>
+            <button class="switch-button" onclick="gallery.setZoom(1.0, this)">100%</button>
+        </div>
+    </section>
+
+    <!-- Модальне вікно при кліку на фото -->
     <div class="split-screen-container" id="splitScreenContainer">
         <div class="split-left">
             <div class="zoom-target" id="zoomTarget"></div>
@@ -37,16 +52,112 @@
             </div>
         </div>
     </div>
-
     <button class="close-button" id="closeButton">✕</button>
 
-    <div class="controls-container" id="controlsContainer">
-        <div class="percentage-indicator" id="percentageIndicator">60%</div>
-        <button class="switch-button" onclick="gallery.setZoom(0.4, this)">40%</button>
-        <button class="switch-button switch-button-current" onclick="gallery.setZoom(0.6, this)">60%</button>
-        <button class="switch-button" onclick="gallery.setZoom(1.0, this)">100%</button>
-    </div>
+    <!-- Блок із текстом під галереєю -->
+    <main class="text-section-wrapper">
+        <div class="content-card">
+            <h1 data-i18n="main_title">Значення квітки Камелія</h1>
+            
+            <div class="meaning-list">
+                <div class="meaning-item">
+                    <h3 data-i18n="item1_title">1. Символ сумної долі та печалі</h3>
+                    <p data-i18n="item1_desc">Завдяки знаменитому роману Александра Дюма-сина «Дама з камеліями», ця квітка міцно закріпилася в культурі як символ трагічного кохання, жертовності та неможливості бути разом.</p>
+                </div>
+
+                <div class="meaning-item">
+                    <h3 data-i18n="item2_title">2. Холодна краса та байдужість</h3>
+                    <p data-i18n="item2_desc">Камелія не має запаху, а її пелюстки здаються майже восковими або порцеляновими. Через це у вікторіанській мові квітів вона іноді означала «досконалість без душі».</p>
+                </div>
+
+                <div class="meaning-item">
+                    <h3 data-i18n="item3_title">3. Значення за кольорами</h3>
+                    <p data-i18n="item3_subtitle" style="margin-bottom: 12px;">Якщо говорити про класичну мову квітів:</p>
+                    <ul class="color-list">
+                        <li class="color-item">
+                            <span class="color-badge badge-white"></span>
+                            <span data-i18n="color_white"><strong>Біла камелія</strong> — досконалість, але також туга («Ти чарівна, але ми не можемо бути разом»).</span>
+                        </li>
+                        <li class="color-item">
+                            <span class="color-badge badge-red"></span>
+                            <span data-i18n="color_red"><strong>Червона камелія</strong> — палке кохання, яке палає в серці («Ти полум'я в моєму серці»).</span>
+                        </li>
+                        <li class="color-item">
+                            <span class="color-badge badge-pink"></span>
+                            <span data-i18n="color_pink"><strong>Рожева камелія</strong> — туга за кимось, бажання бути поруч («Я сумую за тобою»).</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="summary-box">
+                <h3 data-i18n="summary_title">Підсумок</h3>
+                <p data-i18n="summary_desc">Якщо гвоздика чи жовта троянда означають «Ми розходимося», то камелія — це радше «Я сумую за тобою в розлуці» або «Наша любов трагічна і неможлива».</p>
+            </div>
+        </div>
+    </main>
 
     <script src="script.js"></script>
+    <script>
+        const translations = {
+            ua: {
+                main_title: "Значення квітки Камелія",
+                item1_title: "1. Символ сумної долі та печалі",
+                item1_desc: "Завдяки знаменитому роману Александра Дюма-сина «Дама з камеліями», ця квітка міцно закріпилася в культурі як символ трагічного кохання, жертовності та неможливості бути разом.",
+                item2_title: "2. Холодна краса та байдужість",
+                item2_desc: "Камелія не має запаху, а її пелюстки здаються майже восковими або порцеляновими. Через це у вікторіанській мові квітів вона іноді означала «досконалість без душі».",
+                item3_title: "3. Значення за кольорами",
+                item3_subtitle: "Якщо говорити про класичну мову квітів:",
+                color_white: "<strong>Біла камелія</strong> — досконалість, але також туга («Ти чарівна, але ми не можемо бути разом»).",
+                color_red: "<strong>Червона камелія</strong> — палке кохання, яке палає в серці («Ти полум'я в моєму серці»).",
+                color_pink: "<strong>Рожева камелія</strong> — туга за кимось, бажання бути поруч («Я сумую за тобою»).",
+                summary_title: "Підсумок",
+                summary_desc: "Якщо гвоздика чи жовта троянда означають «Ми розходимося», то камелія — це радше «Я сумую за тобою в розлуці» або «Наша любов трагічна і неможлива»."
+            },
+            en: {
+                main_title: "Meaning of the Camellia Flower",
+                item1_title: "1. Symbol of Sad Fate and Sorrow",
+                item1_desc: "Thanks to Alexandre Dumas fils' famous novel 'The Lady of the Camellias', this flower became a symbol of tragic love and sacrifice.",
+                item2_title: "2. Cold Beauty and Indifference",
+                item2_desc: "The camellia has no scent, and its petals appear almost waxy or porcelain. It represented 'perfection without a soul'.",
+                item3_title: "3. Meaning by Color",
+                item3_subtitle: "In the classic language of flowers:",
+                color_white: "<strong>White Camellia</strong> — perfection, but also longing.",
+                color_red: "<strong>Red Camellia</strong> — passionate love burning in the heart.",
+                color_pink: "<strong>Pink Camellia</strong> — longing for someone, a desire to be close.",
+                summary_title: "Summary",
+                summary_desc: "The camellia represents 'I miss you in separation' or 'Our love is tragic and impossible'."
+            },
+            ru: {
+                main_title: "Значение цветка Камелия",
+                item1_title: "1. Символ печальной судьбы и грусти",
+                item1_desc: "Благодаря роману Александра Дюма-сына «Дама с камелиями», этот цветок стал символом трагической любви.",
+                item2_title: "2. Холодная красота и равнодушие",
+                item2_desc: "Камелия не имеет запаха. В викторианском языке цветов она означала «совершенство без души».",
+                item3_title: "3. Значение по цветам",
+                item3_subtitle: "Если говорить о классическом языке цветов:",
+                color_white: "<strong>Белая камелия</strong> — совершенство, но также тоска.",
+                color_red: "<strong>Красная камелия</strong> — страстная любовь, пылающая в сердце.",
+                color_pink: "<strong>Розовая камелия</strong> — тоска по кому-то.",
+                summary_title: "Итог",
+                summary_desc: "Камелия — это «Я скучаю по тебе в разлуке» или «Наша любовь трагична и невозможна»."
+            }
+        };
+
+        function setLanguage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.innerHTML = translations[lang][key];
+                }
+            });
+
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = Array.from(document.querySelectorAll('.lang-btn')).find(
+                btn => btn.textContent.toLowerCase() === lang.toLowerCase()
+            );
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+    </script>
 </body>
 </html>

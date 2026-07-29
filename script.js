@@ -8,26 +8,6 @@ if (typeof gsap !== "undefined") {
   gsap.registerPlugin(...pluginsToRegister);
 }
 
-refreshItemsVisibility() {
-  this.gridItems.forEach((item) => {
-    const rect = item.element.getBoundingClientRect();
-    const inView = (
-      rect.top < window.innerHeight &&
-      rect.bottom > 0 &&
-      rect.left < window.innerWidth &&
-      rect.right > 0
-    );
-
-    if (inView) {
-      item.element.classList.remove("out-of-view");
-      gsap.to(item.element, { opacity: 1, duration: 0.3, overwrite: "auto" });
-    } else {
-      item.element.classList.add("out-of-view");
-      gsap.to(item.element, { opacity: 0.2, duration: 0.3, overwrite: "auto" });
-    }
-  });
-}
-
 class PreloaderManager {
   constructor() {
     this.overlay = null;
@@ -175,6 +155,26 @@ class FashionGallery {
 
     this.initSoundSystem();
     this.initImageData();
+  }
+
+  refreshItemsVisibility() {
+    this.gridItems.forEach((item) => {
+      const rect = item.element.getBoundingClientRect();
+      const inView = (
+        rect.top < window.innerHeight &&
+        rect.bottom > 0 &&
+        rect.left < window.innerWidth &&
+        rect.right > 0
+      );
+
+      if (inView) {
+        item.element.classList.remove("out-of-view");
+        gsap.to(item.element, { opacity: 1, duration: 0.3, overwrite: "auto" });
+      } else {
+        item.element.classList.add("out-of-view");
+        gsap.to(item.element, { opacity: 0.2, duration: 0.3, overwrite: "auto" });
+      }
+    });
   }
 
   initSoundSystem() {
@@ -391,25 +391,11 @@ class FashionGallery {
     if (this.controlsContainer) this.controlsContainer.classList.remove("split-mode");
 
     const restoreAllGridItems = () => {
-  // Примусово повертаємо 100% opacity для ВСІХ елементів у зоні видимості
-  this.refreshItemsVisibility();
+      this.refreshItemsVisibility();
 
-  this.gridItems.forEach((item) => {
-    gsap.to(item.img, { opacity: 1, duration: 0.2 });
-  });
-
-  if (this.zoomState.scalingOverlay && this.zoomState.scalingOverlay.parentNode) {
-    this.zoomState.scalingOverlay.parentNode.removeChild(this.zoomState.scalingOverlay);
-  }
-  this.zoomState.scalingOverlay = null;
-
-  document.body.classList.remove("zoom-mode");
-  if (this.closeButton) this.closeButton.classList.remove("active");
-  if (this.draggable) this.draggable.enable();
-
-  this.zoomState.isActive = false;
-  this.zoomState.selectedItem = null;
-};
+      this.gridItems.forEach((item) => {
+        gsap.to(item.img, { opacity: 1, duration: 0.2 });
+      });
 
       if (this.zoomState.scalingOverlay && this.zoomState.scalingOverlay.parentNode) {
         this.zoomState.scalingOverlay.parentNode.removeChild(this.zoomState.scalingOverlay);
@@ -460,7 +446,7 @@ class FashionGallery {
       this.draggable = Draggable.create(this.canvasWrapper, {
         type: "x,y",
         bounds: bounds,
-        edgeResistance: 0.3, // Полегшене перетягування
+        edgeResistance: 0.3,
         dragClickables: false,
         onDragStart: () => document.body.classList.add("dragging"),
         onDragEnd: () => document.body.classList.remove("dragging")
@@ -469,51 +455,44 @@ class FashionGallery {
   }
 
   setupWheelScroll() {
-  const scrollSpeed = 1.5;
+    const scrollSpeed = 1.5;
 
-  window.addEventListener("wheel", (e) => {
-    // Якщо відкрита картка або ми проскролили сторінку вниз к тексту — не рухаємо полотно
-    if (this.zoomState.isActive || !this.canvasWrapper) return;
+    window.addEventListener("wheel", (e) => {
+      if (this.zoomState.isActive || !this.canvasWrapper) return;
 
-    // Скролимо галерею тільки коли знаходимося в самому верху сторінки
-    if (window.scrollY === 0 && e.deltaY < 0 && gsap.getProperty(this.canvasWrapper, "y") >= this.calculateBounds().maxY) {
-      // Дозволяємо стандартний скрол сторінки вниз, якщо досягли верхньої межі
-      return;
-    }
-
-    // Якщо це горизонтальний скрол або скрол всередині меж галереї:
-    if (window.scrollY === 0) {
-      const currentX = gsap.getProperty(this.canvasWrapper, "x");
-      const currentY = gsap.getProperty(this.canvasWrapper, "y");
-
-      const bounds = this.calculateBounds();
-      
-      let targetX = currentX - (e.shiftKey ? e.deltaY : e.deltaX) * scrollSpeed;
-      let targetY = currentY - (e.shiftKey ? 0 : e.deltaY) * scrollSpeed;
-
-      // Перевіряємо, чи ми не виходимо за межі галереї
-      const clampedX = Math.max(bounds.minX, Math.min(bounds.maxX, targetX));
-      const clampedY = Math.max(bounds.minY, Math.min(bounds.maxY, targetY));
-
-      // Якщо досягли крайньої нижньої межі галереї і крутимо далі вниз — даємо сторінці скролитись до тексту
-      if (targetY < bounds.minY && e.deltaY > 0) {
-        return; 
+      if (window.scrollY === 0 && e.deltaY < 0 && gsap.getProperty(this.canvasWrapper, "y") >= this.calculateBounds().maxY) {
+        return;
       }
 
-      gsap.to(this.canvasWrapper, {
-        x: clampedX,
-        y: clampedY,
-        duration: 0.25,
-        ease: "power1.out",
-        overwrite: "auto",
-        onUpdate: () => {
-          // Ручне оновлення видимості під час скролу, щоб зняти баг туману
-          this.refreshItemsVisibility();
+      if (window.scrollY === 0) {
+        const currentX = gsap.getProperty(this.canvasWrapper, "x");
+        const currentY = gsap.getProperty(this.canvasWrapper, "y");
+
+        const bounds = this.calculateBounds();
+
+        let targetX = currentX - (e.shiftKey ? e.deltaY : e.deltaX) * scrollSpeed;
+        let targetY = currentY - (e.shiftKey ? 0 : e.deltaY) * scrollSpeed;
+
+        const clampedX = Math.max(bounds.minX, Math.min(bounds.maxX, targetX));
+        const clampedY = Math.max(bounds.minY, Math.min(bounds.maxY, targetY));
+
+        if (targetY < bounds.minY && e.deltaY > 0) {
+          return; 
         }
-      });
-    }
-  }, { passive: true });
-}
+
+        gsap.to(this.canvasWrapper, {
+          x: clampedX,
+          y: clampedY,
+          duration: 0.25,
+          ease: "power1.out",
+          overwrite: "auto",
+          onUpdate: () => {
+            this.refreshItemsVisibility();
+          }
+        });
+      }
+    }, { passive: true });
+  }
 
   playIntroAnimation() {
     gsap.to(this.gridItems.map((item) => item.element), {
@@ -565,7 +544,6 @@ class FashionGallery {
     gsap.set(this.viewport, { opacity: 1 });
     gsap.set(this.canvasWrapper, { scale: this.config.currentZoom });
 
-    // Центрування сітки
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const initialX = (vw - this.gridDimensions.width * this.config.currentZoom) / 2;

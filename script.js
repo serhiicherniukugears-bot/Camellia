@@ -382,45 +382,64 @@ class FashionGallery {
   }
 
   exitZoomMode() {
-    if (!this.zoomState.isActive) return;
-    this.soundSystem.play("close");
+  if (!this.zoomState.isActive) return;
+  this.soundSystem.play("close");
 
-    if (this.imageTitleOverlay) gsap.to(this.imageTitleOverlay, { opacity: 0, duration: 0.3 });
-    if (this.closeButton) gsap.to(this.closeButton, { duration: 0.3, opacity: 0, x: 40 });
-    this.splitScreenContainer.classList.remove("active");
-    if (this.controlsContainer) this.controlsContainer.classList.remove("split-mode");
-
-    const restoreAllGridItems = () => {
-      this.refreshItemsVisibility();
-
-      this.gridItems.forEach((item) => {
-        gsap.to(item.img, { opacity: 1, duration: 0.2 });
-      });
-
-      if (this.zoomState.scalingOverlay && this.zoomState.scalingOverlay.parentNode) {
-        this.zoomState.scalingOverlay.parentNode.removeChild(this.zoomState.scalingOverlay);
-      }
-      this.zoomState.scalingOverlay = null;
-
-      document.body.classList.remove("zoom-mode");
-      if (this.closeButton) this.closeButton.classList.remove("active");
-      if (this.draggable) this.draggable.enable();
-
-      this.zoomState.isActive = false;
-      this.zoomState.selectedItem = null;
-    };
-
-    if (typeof Flip !== "undefined" && this.zoomState.scalingOverlay && this.zoomState.selectedItem) {
-      Flip.fit(this.zoomState.scalingOverlay, this.zoomState.selectedItem.element, {
-        duration: 1.2,
-        ease: this.customEase,
-        absolute: true,
-        onComplete: restoreAllGridItems
-      });
-    } else {
-      restoreAllGridItems();
-    }
+  if (this.imageTitleOverlay) {
+    gsap.to(this.imageTitleOverlay, { opacity: 0, duration: 0.3 });
   }
+
+  if (this.closeButton) {
+    gsap.to(this.closeButton, { duration: 0.3, opacity: 0, x: 40 });
+  }
+
+  // Плавне згасання splitScreenContainer з наступним видаленням класу
+  if (this.splitScreenContainer) {
+    gsap.to(this.splitScreenContainer, {
+      opacity: 0,
+      duration: 0.6,
+      ease: "power2.out",
+      onComplete: () => {
+        this.splitScreenContainer.classList.remove("active");
+      }
+    });
+  }
+
+  if (this.controlsContainer) {
+    this.controlsContainer.classList.remove("split-mode");
+  }
+
+  const restoreAllGridItems = () => {
+    this.refreshItemsVisibility();
+
+    this.gridItems.forEach((item) => {
+      gsap.to(item.img, { opacity: 1, duration: 0.2 });
+    });
+
+    if (this.zoomState.scalingOverlay && this.zoomState.scalingOverlay.parentNode) {
+      this.zoomState.scalingOverlay.parentNode.removeChild(this.zoomState.scalingOverlay);
+    }
+    this.zoomState.scalingOverlay = null;
+
+    document.body.classList.remove("zoom-mode");
+    if (this.closeButton) this.closeButton.classList.remove("active");
+    if (this.draggable) this.draggable.enable();
+
+    this.zoomState.isActive = false;
+    this.zoomState.selectedItem = null;
+  };
+
+  if (typeof Flip !== "undefined" && this.zoomState.scalingOverlay && this.zoomState.selectedItem) {
+    Flip.fit(this.zoomState.scalingOverlay, this.zoomState.selectedItem.element, {
+      duration: 1.2,
+      ease: this.customEase,
+      absolute: true,
+      onComplete: restoreAllGridItems
+    });
+  } else {
+    restoreAllGridItems();
+  }
+}
 
   calculateBounds() {
     const vw = window.innerWidth;
